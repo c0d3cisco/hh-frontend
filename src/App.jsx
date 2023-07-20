@@ -1,22 +1,23 @@
 import React from 'react';
 import './App.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-
-import Layout from './Components/Layout';
-import Checkin from './Pages/Checkin';
-import SignupPage from './Pages/SignUp';
-import DataDashboard from './Pages/DataDashboard';
+// import Checkin from './Pages/Checkin'
+import Layout from '../Components/Layout';
 import Home from './Pages/Home';
+import SignUp from './Pages/SignUp';
+import SignUpApproval from './Pages/SignUpApproval';
+import UserSettings from './Pages/UserSettings';
 
 function App() {
   return (
     <Router>
       <Layout>
         <Routes>
-          <Route path="/" exact component={Home} />
-          <Route path="/checkin" component={Checkin} />
-          <Route path="/signup" component={SignupPage} />
-          <Route path="/datadashboard" component={DataDashboard} />
+          {/* <Route path='/' page={Checkin} /> */}
+          <Route path='/' page={Home} />
+          <Route path='/' page={SignUp} />
+          <Route path='/' page={SignUpApproval} />
+          <Route path='/' page={UserSettings} />
         </Routes>
       </Layout>
     </Router>
