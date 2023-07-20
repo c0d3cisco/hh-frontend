@@ -1,4 +1,4 @@
-# Software Requirements | v1
+# Software Requirements | v2
 
 ## Vision
 
@@ -131,21 +131,28 @@ These functions are designed to digitize and streamline Helen House's data manag
 
 ## Data Flow
 
-To illustrate the data flow within the application for this initial phase of the product, here's a "happy path" scenario from the time an admin begins using the app to when they're done:
+To illustrate the updated data flow within the application, here's a "happy path" scenario for both the member and admin users:
 
-  1. Admin Login: An admin starts by logging into the system using their unique credentials. The system authenticates the user and authorizes them to access the specific functionalities according to their admin level.
+**Member User Data Flow:**
 
-  2. Member Registration: When a new member arrives, the admin inputs the member's details into the member intake form in the application. The data entered includes the member's demographic information, contact details, and health concerns.
+1. **User Login**: A member starts by logging into the system using their unique credentials. The system connects to Auth0 for verification and pulls data from the user table, setting appropriate permission levels.
 
-  3. Data Storage: Once the form is submitted, the system processes the data and stores it securely in the cloud-based database. It also indexes the data to facilitate quick retrieval and querying in the future.
+2. **Check-In Page**: The user is able to log their check-in or checkout status, and log their mood. This triggers the check-in process.
 
-  4. Member Check-In: When a member checks in at the center, the admin enters the member's check-in data into the system, including time, date, and reported mood. The system updates this information in the database linked to the member's profile.
+**Admin User Data Flow:**
 
-  5. Data Query and Reporting: The admin can query the database to retrieve specific data sets or demographic information. The system processes the query request, retrieves the relevant data from the database, and presents it in a readable format for the admin. The admin can also generate reports based on the queried data.
+1. **Admin Login**: An admin starts by logging into the system using their unique credentials. The system verifies the admin's identity.
 
-  6. Check-Out and Logoff: When the member checks out, the admin updates this information in the system. The check-out data is processed and stored in the database. Once the admin has finished their tasks, they can safely log out of the system.
+2. **View Data Dashboard & Permission Settings**: The admin is presented with a data dashboard where they can view various statistics and data. The system also displays the current permission settings for the admin.
 
-Please note that the above scenario describes an ideal interaction with the system in this initial phase of product development that is focused on backend functionality. Exception handling, such as dealing with incorrect data input or unauthorized access attempts, is also an essential part of the data flow but is not described in this "happy path" scenario. This also excludes any additional functionality when the front end is build out in the next phase of product development.
+3. **Update User Data**: The admin can update existing user data in the user data table and user table. 
+
+4. **Data Dashboard Interactions**: The admin can perform a variety of operations through the data dashboard, including reading, creating, updating, and deleting queries.
+
+5. **User Management**: The admin has the ability to create and manage user accounts in the system. They can also manually check-in users if necessary.
+
+Please note that the above scenario describes an ideal interaction with the system. Exception handling, such as dealing with incorrect data input or unauthorized access attempts, is also an essential part of the data flow but is not described in this "happy path" scenario. This also excludes any additional functionality that may be introduced in future phases of product development.
+
 
 ## Non-Functional Requirements
 
