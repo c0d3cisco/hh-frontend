@@ -4,18 +4,18 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 const MoodSlider = ({ rating, onRatingChange }) => {
   const traditionalMoodEmojis = {
-    1: ':cry:',
-    2: ':pensive:',
-    3: ':neutral_face:',
-    4: ':slightly_smiling_face:',
-    5: ':smile:',
+    1: '😢',
+    2: '😔',
+    3: '😐',
+    4: '🙂',
+    5: '😄',
   };
   const genzMoodEmojis = {
-    1: ':upside_down_face:',
-    2: ':skull:',
-    3: ':sweat_smile:',
-    4: ':sob:',
-    5: ':fire:',
+    1: '🙃',
+    2: '💀',
+    3: '😅',
+    4: '😭',
+    5: '🔥',
   };
   const [isTraditional, setIsTraditional] = useState(true);
   const toggleEmojiSet = () => {

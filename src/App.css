@@ -36,3 +36,11 @@
     transform: rotate(360deg);
   }
 }
+
+/* Add styles for the main content */
+.Main-content {
+  width: 100%;
+  max-width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+}
