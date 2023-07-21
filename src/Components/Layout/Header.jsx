@@ -15,6 +15,7 @@ import {
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import HHLogo from '../../assets/updated_helen_house_logo_cropped_360.png';
+import { LoginModal } from '../Login'; // Import the ModalLogin component
 
 const pages = [
   { name: 'Home', path: '/' },
@@ -32,6 +33,8 @@ const settings = [
 export default function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false); // State for login modal
+
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -43,6 +46,14 @@ export default function ResponsiveAppBar() {
   };
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+  };
+
+  const handleLoginClick = () => {
+    setIsLoginModalOpen(true); // Open the login modal
+  };
+
+  const handleLoginModalClose = () => {
+    setIsLoginModalOpen(false); // Close the login modal
   };
 
   return (
@@ -151,6 +162,7 @@ export default function ResponsiveAppBar() {
                 </Button>
               </Link>
             ))}
+            <Button color="inherit" onClick={handleLoginClick}>Login</Button> {/* Login button */}
           </Box>
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
@@ -183,6 +195,8 @@ export default function ResponsiveAppBar() {
           </Box>
         </Toolbar>
       </Container>
+      {/* Login Modal */}
+      <LoginModal opened={isLoginModalOpen} onClose={handleLoginModalClose} />
     </AppBar>
   );
 }
