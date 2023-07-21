@@ -152,16 +152,19 @@ export default function ResponsiveAppBar() {
             }}
           >
             {pages.map((page) => (
-              <Link to={page.path} key={page.name} style={{ textDecoration: 'none' }}>
+              // <Link to={page.path} key={page.name} style={{ textDecoration: 'none' }}>
                 <Button
+                  component={Link}
+                  to={page.path}
                   key={page.name}
                   onClick={handleCloseNavMenu}
                   sx={{ my: 2, color: 'white', display: 'block' }}
                 >
                   {page.name}
                 </Button>
-              </Link>
+              // </Link>
             ))}
+
             <Button color="inherit" onClick={handleLoginClick}>Login</Button> {/* Login button */}
           </Box>
           <Box sx={{ flexGrow: 0 }}>

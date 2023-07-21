@@ -4,25 +4,39 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Layout from './Components/Layout';
 import Home from './Pages/Home';
 import SignUp from './Pages/SignUp';
-import SignUpApproval from './Pages/SignUpApproval';
 import UserSettings from './Pages/UserSettings';
 import { Checkin } from './Pages/Checkin';
 import DataDashboard from './Pages/DataDashboard';
+import IntakeForm from './Pages/IntakeForm';
+import Header from './Components/Layout/Header';
+import Footer from './Components/Layout/Footer';
+import { Auth0Provider } from '@auth0/auth0-react'; // Import Auth0Provider
+
 
 export default function App() {
   return (
+    // <Auth0Provider
+    //   domain="dev-asdaiq2qzmt7fozh.us.auth0.com"
+    //   clientId="cfleISlyWfWRhhx6cGjVqryrGFKeCq4V"
+    //   redirectUri={window.location.origin} // Set the redirect URI after login
+    // >
     <Router>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
-          <Route path="/Checkin" element={<Checkin />} />
+      <Layout>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          {/* <Route path="/" element={<Layout />}> */}
+          {/* <Route index element={<Home />} /> */}
+          <Route path="/checkin" element={<Checkin />} />
           <Route path="/signup" element={<SignUp />} />
-          <Route path="/signupapproval" element={<SignUpApproval />} />
+          <Route path="/intakeform" element={<IntakeForm />} />
           <Route path="/usersettings" element={<UserSettings />} />
           <Route path="/datadashboard" element={<DataDashboard />} />
-        </Route>
-      </Routes>
+
+        </Routes>
+      </Layout >
     </Router>
+  // {/* // </Auth0Provider> */ }
+
   );
 }
 

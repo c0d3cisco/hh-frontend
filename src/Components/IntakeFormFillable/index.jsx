@@ -3,7 +3,7 @@ import { TextField, Button,  Stack } from "@mui/material";
 import { Link } from "react-router-dom";
 import { LoginModal } from "../Login";
 
-export default function SignUpForm() {
+export default function IntakeFormFillable() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -21,7 +21,7 @@ export default function SignUpForm() {
 
   return (
     <>
-      <h2>Sign Up Here</h2>
+      <h2>Register Form</h2>
       <form onSubmit={handleSubmit}>
         <Stack spacing={2} direction="row" sx={{ marginBottom: 4 }}>
           <TextField
@@ -74,9 +74,8 @@ export default function SignUpForm() {
           label="Date of Birth"
           onChange={(e) => setDateOfBirth(e.target.value)}
           value={dateOfBirth}
-          InputLabelProps={{ shrink: true }}
-          required
           fullWidth
+          required
           sx={{ mb: 4 }}
         />
         <Button variant="outlined" color="secondary" type="submit">
