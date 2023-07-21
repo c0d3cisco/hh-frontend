@@ -6,23 +6,27 @@ import Home from './Pages/Home';
 import SignUp from './Pages/SignUp';
 import SignUpApproval from './Pages/SignUpApproval';
 import UserSettings from './Pages/UserSettings';
+import { Checkin } from './Pages/Checkin';
+import DataDashboard from './Pages/DataDashboard';
 
-function App() {
+export default function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Layout>
+        <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
-          <Route path="signup" element={<SignUp />} />
-          <Route path="signupapproval" element={<SignUpApproval />} />
-          <Route path="usersettings" element={<UserSettings />} />
-        </Layout>} />
+          <Route path="/Checkin" element={<Checkin />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/signupapproval" element={<SignUpApproval />} />
+          <Route path="/usersettings" element={<UserSettings />} />
+          <Route path="/datadashboard" element={<DataDashboard />} />
+        </Route>
       </Routes>
     </Router>
   );
 }
 
-export default App;
+
 
 // import React from 'react';
 // import './App.css';

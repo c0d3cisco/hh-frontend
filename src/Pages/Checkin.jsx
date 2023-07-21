@@ -3,7 +3,7 @@ import { Typography, Button, CircularProgress, Box } from '@mui/material';
 import logo from '../assets/updated_helen_house_logo_cropped_360.png';
 import MoodSlider from '../Components/Checkin/MoodSlider';
 
-const Checkin = () => {
+export const Checkin = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isCheckedIn, setIsCheckedIn] = useState(false);
   const [moodRating, setMoodRating] = useState(3); // Initial mood rating value
@@ -88,4 +88,3 @@ const Checkin = () => {
   );
 };
 
-export default Checkin;

@@ -16,9 +16,20 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import HHLogo from '../../assets/updated_helen_house_logo_cropped_360.png';
 
-const pages = ['Home', 'Checkin', 'Signup'];
-const settings = ['User Settings', 'SignUp Approval', 'Data Dashboard', 'Logout'];
-function ResponsiveAppBar() {
+const pages = [
+  { name: 'Home', path: '/' },
+  { name: 'Checkin', path: '/checkin' },
+  { name: 'Signup', path: '/signup' },
+  { name: 'DataDashboard', path: '/datadashboard' },
+];
+const settings = [
+  { name: 'User Settings', path: '/usersettings' },
+  { name: 'SignUp Approval', path: '/signupapproval' },
+  { name: 'Data Dashboard', path: '/datadashboard' },
+  { name: 'Logout', path: '/logout' },
+];
+
+export default function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const handleOpenNavMenu = (event) => {
@@ -33,14 +44,27 @@ function ResponsiveAppBar() {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+
   return (
-    <AppBar position="static">
+    <AppBar
+      position="static"
+      sx={{
+        backgroundColor: '#a37ccf',
+        paddingY: 1,
+        paddingX: 2,
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+      }}
+    >
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <img
-          src = {HHLogo}
-          alt = 'Helen House logo'
-          sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+            src={HHLogo}
+            alt="Helen House logo"
+            sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}
+          />
           <Typography
             variant="h6"
             noWrap
@@ -55,9 +79,7 @@ function ResponsiveAppBar() {
               color: 'inherit',
               textDecoration: 'none',
             }}
-          >
-
-          </Typography>
+          ></Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
@@ -88,8 +110,8 @@ function ResponsiveAppBar() {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
+                <MenuItem key={page.name} onClick={handleCloseNavMenu}>
+                  <Typography textAlign="center">{page.name}</Typography>
                 </MenuItem>
               ))}
             </Menu>
@@ -110,19 +132,23 @@ function ResponsiveAppBar() {
               color: 'inherit',
               textDecoration: 'none',
             }}
+          ></Typography>
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: { xs: 'none', md: 'flex' },
+              justifyContent: 'flex-end', // Move buttons to the right
+            }}
           >
-
-          </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
-              <Link to={`/${page}`} key={page} style={{ textDecoration: 'none'}}>
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                {page}
-              </Button>
+              <Link to={page.path} key={page.name} style={{ textDecoration: 'none' }}>
+                <Button
+                  key={page.name}
+                  onClick={handleCloseNavMenu}
+                  sx={{ my: 2, color: 'white', display: 'block' }}
+                >
+                  {page.name}
+                </Button>
               </Link>
             ))}
           </Box>
@@ -149,8 +175,8 @@ function ResponsiveAppBar() {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+                <MenuItem key={setting.name} onClick={handleCloseUserMenu}>
+                  <Typography textAlign="center">{setting.name}</Typography>
                 </MenuItem>
               ))}
             </Menu>
@@ -160,4 +186,3 @@ function ResponsiveAppBar() {
     </AppBar>
   );
 }
-export default ResponsiveAppBar;
