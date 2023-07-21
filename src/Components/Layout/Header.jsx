@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import {
   AppBar,
   Box,
@@ -30,10 +30,15 @@ const settings = [
   { name: 'Logout', path: '/logout' },
 ];
 
+// ... (previous imports and code)
+
 export default function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false); // State for login modal
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [userRole, setUserRole] = useState('guest'); // 'guest', 'user', 'admin', 'staff', 'volunteer'
+  const [activePage, setActivePage] = useState('/');
+  const location = useLocation();
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -55,6 +60,34 @@ export default function ResponsiveAppBar() {
   const handleLoginModalClose = () => {
     setIsLoginModalOpen(false); // Close the login modal
   };
+
+  useEffect(() => {
+    // Replace this with your actual authentication logic
+    // Set the user role based on authentication state
+    const userIsAuthenticated = true; // Replace this with the actual authentication state
+    const isAdmin = true; // Replace this with the actual admin role check
+    const isStaff = true; // Replace this with the actual staff role check
+    const isVolunteer = true; // Replace this with the actual volunteer role check
+
+    if (userIsAuthenticated) {
+      if (isAdmin) {
+        setUserRole('admin');
+      } else if (isStaff) {
+        setUserRole('staff');
+      } else if (isVolunteer) {
+        setUserRole('volunteer');
+      } else {
+        setUserRole('user');
+      }
+    } else {
+      setUserRole('guest');
+    }
+  }, []);
+
+  useEffect(() => {
+    // Update the active page state whenever the location pathname changes
+    setActivePage(location.pathname);
+  }, [location.pathname]);
 
   return (
     <AppBar
@@ -90,7 +123,9 @@ export default function ResponsiveAppBar() {
               color: 'inherit',
               textDecoration: 'none',
             }}
-          ></Typography>
+          >
+            {/* Add your website name here */}
+          </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
@@ -143,7 +178,9 @@ export default function ResponsiveAppBar() {
               color: 'inherit',
               textDecoration: 'none',
             }}
-          ></Typography>
+          >
+            {/* Add your website name here */}
+          </Typography>
           <Box
             sx={{
               flexGrow: 1,
@@ -151,21 +188,41 @@ export default function ResponsiveAppBar() {
               justifyContent: 'flex-end', // Move buttons to the right
             }}
           >
-            {pages.map((page) => (
-              // <Link to={page.path} key={page.name} style={{ textDecoration: 'none' }}>
-                <Button
-                  component={Link}
-                  to={page.path}
-                  key={page.name}
-                  onClick={handleCloseNavMenu}
-                  sx={{ my: 2, color: 'white', display: 'block' }}
-                >
-                  {page.name}
-                </Button>
-              // </Link>
-            ))}
+            {pages.map((page) => {
+            // Display the button based on user role
+            if (
+              (userRole === 'guest' && page.name === 'Home') ||
+              (userRole === 'user' && ['Home', 'Checkin'].includes(page.name)) ||
+              (userRole === 'admin') || // Include all pages for admins
+              (userRole === 'staff' && page.name !== 'DataDashboard') ||
+              (userRole === 'volunteer' && ['Home', 'Checkin', 'Logout'].includes(page.name))
+            ) {
+                return (
+                  <Button
+                    component={Link}
+                    to={page.path}
+                    key={page.name}
+                    onClick={() => setActivePage(page.path)}
+                    sx={{
+                      my: 2,
+                      color: activePage === page.path ? 'secondary.main' : 'white',
+                      display: 'block',
+                    }}
+                  >
+                    {page.name}
+                  </Button>
+                );
+              }
+              return null; // Hide the button if not allowed for the user role
+            })}
 
-            <Button color="inherit" onClick={handleLoginClick}>Login</Button> {/* Login button */}
+            {userRole === 'guest' ? (
+              <Button color="inherit" onClick={handleLoginClick}>
+                Login
+              </Button>
+            ) : (
+              <Button color="inherit">Logout</Button>
+            )}
           </Box>
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
@@ -203,3 +260,4 @@ export default function ResponsiveAppBar() {
     </AppBar>
   );
 }
+
