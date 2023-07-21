@@ -228,19 +228,43 @@ const quotesArray = [
   },
 ];
 
-const RandomQuote = () => {
+export default function RandomQuote() {
   const [randomQuote, setRandomQuote] = useState(null);
+  const [fade, setFade] = useState(false);
 
   useEffect(() => {
-    // Select a random quote from the array
     const randomIndex = Math.floor(Math.random() * quotesArray.length);
     setRandomQuote(quotesArray[randomIndex]);
   }, []);
 
+  useEffect(() => {
+    // Fade in the quote after 500ms (0.5 seconds)
+    setFade(true);
+
+    // Change to the next quote after 30 seconds and fade out the current quote
+    const interval = setInterval(() => {
+      setFade(false);
+      setTimeout(() => {
+        const randomIndex = Math.floor(Math.random() * quotesArray.length);
+        setRandomQuote(quotesArray[randomIndex]);
+        setFade(true); // Fade in the new quote after changing
+      }, 500);
+    }, 15000);
+
+    return () => clearInterval(interval);
+  }, [randomQuote]);
+
   return (
-    <Paper sx={{ p: 3, maxWidth: 600, margin: 'auto' }}>
+    <Paper
+      sx={{
+        p: 3,
+        maxWidth: 600,
+        margin: 'auto',
+        animation: fade ? 'fade-in 0.5s' : 'fade-out 0.5s', // Use template literals
+      }}
+    >
       {randomQuote && (
-        <blockquote>
+        <blockquote className='quote'>
           <Typography variant="body1" sx={{ fontStyle: 'italic' }}>
             {randomQuote.text}
           </Typography>
@@ -251,6 +275,4 @@ const RandomQuote = () => {
       )}
     </Paper>
   );
-};
-
-export default RandomQuote;
+}

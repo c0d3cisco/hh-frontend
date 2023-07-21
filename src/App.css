@@ -38,9 +38,48 @@
 }
 
 /* Add styles for the main content */
+/* Add styles for the main content */
 .Main-content {
   width: 100%;
   max-width: 100%;
   padding: 20px;
   box-sizing: border-box;
+}
+
+/* Animation for the header text */
+.header-text {
+  animation: fade-in 1s ease-in-out forwards;
+}
+
+/* Animation for the logo */
+.logo {
+  animation: fade-in 1s ease-in-out forwards;
+}
+
+
+/* Animation for the quote */
+.quote {
+  animation: fade-in 3s ease-in-out;
+}
+
+.quote.fade-out {
+  animation: fade-out 3s ease-in-out;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }
