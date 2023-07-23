@@ -1,12 +1,12 @@
 import React from 'react';
-import './App.css';
+import './App.scss';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Layout from './Components/Layout';
 import Home from './Pages/Home';
 import SignUp from './Pages/SignUp';
 import UserSettings from './Pages/UserSettings';
 import { Checkin } from './Pages/Checkin';
-import DataDashboard from './Pages/DataDashboard';
+import Dashboard from './Pages/DataDashboard';
 import IntakeForm from './Pages/IntakeForm';
 import { Auth0Provider } from '@auth0/auth0-react'; // Import Auth0Provider
 
@@ -26,7 +26,7 @@ export default function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/intakeform" element={<IntakeForm />} />
           <Route path="/usersettings" element={<UserSettings />} />
-          <Route path="/datadashboard" element={<DataDashboard />} />
+          <Route path="/datadashboard" element={<Dashboard />} />
         </Routes>
       </Layout>
     </Router>
