@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { TextField, Button,  Stack } from "@mui/material";
-import { Link } from "react-router-dom";
+import { TextField, Button, Stack } from "@mui/material";
+import { Link, useNavigate } from "react-router-dom";
 import { LoginModal } from "../Login";
 
 export default function SignUpForm() {
@@ -9,15 +9,22 @@ export default function SignUpForm() {
   const [email, setEmail] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [password, setPassword] = useState("");
-  
+
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false); // Add state for login modal
+  const navigate = useNavigate(); // Use useNavigate hook to access navigation function
 
   function handleSubmit(event) {
     event.preventDefault();
+    console.log('handlesubmit');
     console.log(firstName, lastName, email, dateOfBirth, password);
-    // Perform form submission logic here, then navigate to the login page
-    setIsLoginModalOpen(true);
+ 
+    navigate("/intakeform");
   }
+
+
+  
+
+
 
   return (
     <>
@@ -79,16 +86,18 @@ export default function SignUpForm() {
           fullWidth
           sx={{ mb: 4 }}
         />
-        <Button variant="outlined" color="secondary" type="submit">
-          Register
-        </Button>
+        {/* <Link to="/intakeform" style={{ textDecoration: 'none' }}> */}
+          <Button variant="outlined" color="secondary" type="submit">
+            Register
+          </Button>
+        {/* </Link> */}
       </form>
       <small>
         Already have an account? <Link to="#" onClick={() => setIsLoginModalOpen(true)}>Login Here</Link>
       </small>
 
       {/* Login Modal */}
-      <LoginModal opened={isLoginModalOpen} onClose={()=> setIsLoginModalOpen(false)}/>
+      <LoginModal opened={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
     </>
   );
 }

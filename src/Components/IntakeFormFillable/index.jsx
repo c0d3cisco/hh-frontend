@@ -1,4 +1,3 @@
-
 import IntakeFormFillable from '../Components/IntakeFormFillable';
 import * as React from 'react';
 import Box from '@mui/material/Box';
@@ -578,7 +577,5 @@ defaultValue=""
 </Box>
 );
 }
-
-
 
 

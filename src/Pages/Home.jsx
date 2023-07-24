@@ -9,8 +9,8 @@ const Home = () => {
       <Typography variant="h3" className="header-text" sx={{ fontWeight: 'bold', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)' }} >
         Welcome to Helen House
       </Typography>
-      <img src={logo} alt="Helen House Logo" className='logo' style={{ width: '20%', maxWidth: '400px', }} />
-      <RandomQuote />
+      <img src={logo} alt="Helen House Logo" className='logo' style={{ width: '15%', maxWidth: '400px', }} sx={{marginBottom:20}} />
+      <RandomQuote sx={{marginTop:10}}/>
     </div>
   );
 };
