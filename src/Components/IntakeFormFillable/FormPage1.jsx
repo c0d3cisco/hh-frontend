@@ -15,7 +15,9 @@ export default function FormPage1({ formData, handleChange }) {
 
   return (
     <Box>
-      <div style={{ display: 'flex', flexDirection: 'row' }}>
+      <p>Personal Information: </p>
+      <div style={{ display: 'flex', flexDirection: 'row', minWidth:500 ,maxWidth:800 }}>
+        
         <TextField
           required
           id="outlined-required"
@@ -49,6 +51,38 @@ export default function FormPage1({ formData, handleChange }) {
           onChange={handleChange}
         />
       </div>
+      <div>
+          <p>Your Contact Information: </p>
+          <TextField
+            id="outlined-basic"
+            label="Email"
+            variant="outlined"
+            value={formData.email}
+            onChange={handleChange}
+          />
+          <TextField
+            id="outlined-basic"
+            label="Phone Number"
+            variant="outlined"
+            value={formData.phone}
+            onChange={handleChange}
+          />
+            <FormControl>
+            <FormLabel id="demo-radio-buttons-group-label">Preferred form of contact:</FormLabel>
+            <RadioGroup
+              aria-labelledby="demo-radio-buttons-group-label"
+              defaultValue="none"
+              name="radio-buttons-group"
+              value={formData.contact}
+              onChange={handleChange}
+            >
+              <FormControlLabel value="email" control={<Radio />} label="Email" />
+              <FormControlLabel value="phone" control={<Radio />} label="Phone" />
+              <FormControlLabel value="text" control={<Radio />} label="Text" />
+              <FormControlLabel value="do not contact" control={<Radio />} label="Do Not Contact" />
+            </RadioGroup>
+          </FormControl>
+        </div>
       <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
         <div>
           <p>Emergency Contact: </p>
@@ -113,22 +147,6 @@ export default function FormPage1({ formData, handleChange }) {
             label="Knowledge"
             variant="outlined"
             value={formData.em_knowledge2}
-            onChange={handleChange}
-          />
-        </div>
-        <div>
-          <TextField
-            id="outlined-basic"
-            label="Email"
-            variant="outlined"
-            value={formData.email}
-            onChange={handleChange}
-          />
-          <TextField
-            id="outlined-basic"
-            label="Phone Number"
-            variant="outlined"
-            value={formData.phone}
             onChange={handleChange}
           />
         </div>
