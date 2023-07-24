@@ -1,103 +1,144 @@
 import React, { useState } from "react";
-import { TextField, Button, Stack } from "@mui/material";
+import { TextField, Button, Stack, Typography, Box } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { LoginModal } from "../Login";
+import CheckIcon from "@mui/icons-material/Check";
+import ClearIcon from "@mui/icons-material/Clear";
 
 export default function SignUpForm() {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [dateOfBirth, setDateOfBirth] = useState("");
-  const [password, setPassword] = useState("");
 
+  //! Replace with our Create on the user table to check if username exists already and then create the user
+
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false); // Add state for login modal
   const navigate = useNavigate(); // Use useNavigate hook to access navigation function
 
-  function handleSubmit(event) {
+  const checkPasswordValidity = () => {
+    // Password validation for at least one capital letter, one special character, and one number
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return password.match(passwordRegex);
+  };
+
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
+  };
+
+  const handleConfirmPasswordChange = (event) => {
+    setConfirmPassword(event.target.value);
+  };
+
+  const handleSubmit = (event) => {
     event.preventDefault();
-    console.log('handlesubmit');
-    console.log(firstName, lastName, email, dateOfBirth, password);
- 
+    console.log('handleSubmit');
+    console.log(username, password);
+
+    if (password !== confirmPassword) {
+      alert("Passwords do not match.");
+      return;
+    }
+
+    if (!checkPasswordValidity()) {
+      alert(
+        "Password must be at least 8 characters long and include at least one capital letter, one special character, and one number."
+      );
+      return;
+    }
+
+    // Perform form submission logic here
+
     navigate("/intakeform");
-  }
+  };
 
-
-  
-
-
+  const passwordIsValid = checkPasswordValidity();
 
   return (
-    <>
-      <h2>Sign Up Here</h2>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        marginTop: 10,
+        padding: 2,
+      }}
+    >
+      <Typography variant="h4" gutterBottom>
+        Sign Up Here
+      </Typography>
       <form onSubmit={handleSubmit}>
-        <Stack spacing={2} direction="row" sx={{ marginBottom: 4 }}>
+        <Box width={400}>
           <TextField
             type="text"
             variant="outlined"
             color="secondary"
-            label="First Name"
-            onChange={(e) => setFirstName(e.target.value)}
-            value={firstName}
+            label="Username"
+            onChange={(e) => setUsername(e.target.value)}
+            value={username}
             fullWidth
             required
           />
           <TextField
-            type="text"
+            type="password"
             variant="outlined"
             color="secondary"
-            label="Last Name"
-            onChange={(e) => setLastName(e.target.value)}
-            value={lastName}
-            fullWidth
+            label="Password"
+            onChange={handlePasswordChange}
+            value={password}
             required
+            fullWidth
+            sx={{ mt: 2 }}
+            // Show password validity icon
+            InputProps={{
+              endAdornment: password ? (
+                passwordIsValid ? (
+                  <CheckIcon sx={{ color: "green" }} />
+                ) : (
+                  <ClearIcon sx={{ color: "red" }} />
+                )
+              ) : null,
+            }}
           />
-        </Stack>
-        <TextField
-          type="email"
-          variant="outlined"
-          color="secondary"
-          label="Email"
-          onChange={(e) => setEmail(e.target.value)}
-          value={email}
-          fullWidth
-          required
-          sx={{ mb: 4 }}
-        />
-        <TextField
-          type="password"
-          variant="outlined"
-          color="secondary"
-          label="Password"
-          onChange={(e) => setPassword(e.target.value)}
-          value={password}
-          required
-          fullWidth
-          sx={{ mb: 4 }}
-        />
-        <TextField
-          type="date"
-          variant="outlined"
-          color="secondary"
-          label="Date of Birth"
-          onChange={(e) => setDateOfBirth(e.target.value)}
-          value={dateOfBirth}
-          InputLabelProps={{ shrink: true }}
-          required
-          fullWidth
-          sx={{ mb: 4 }}
-        />
-        {/* <Link to="/intakeform" style={{ textDecoration: 'none' }}> */}
-          <Button variant="outlined" color="secondary" type="submit">
-            Register
-          </Button>
-        {/* </Link> */}
+          {/* Password requirements subtext */}
+          <Typography variant="body2" color={passwordIsValid ? "green" : "red"} sx={{ mt: 1 }}>
+            Password must be at least 8 characters long and include at least one capital letter, one special character, and one number.
+          </Typography>
+          <TextField
+            type="password"
+            variant="outlined"
+            color="secondary"
+            label="Confirm Password"
+            onChange={handleConfirmPasswordChange}
+            value={confirmPassword}
+            required
+            fullWidth
+            sx={{ mt: 2 }}
+            // Show password match icon
+            InputProps={{
+              endAdornment: confirmPassword ? (
+                password === confirmPassword ? (
+                  <CheckIcon sx={{ color: "green" }} />
+                ) : (
+                  <ClearIcon sx={{ color: "red" }} />
+                )
+              ) : null,
+            }}
+          />
+        </Box>
+        <Button variant="outlined" color="secondary" type="submit" sx={{ mt: 3 }}>
+          Register
+        </Button>
       </form>
-      <small>
-        Already have an account? <Link to="#" onClick={() => setIsLoginModalOpen(true)}>Login Here</Link>
+      <small sx={{marginTop:10}}>
+        Already have an account?{" "}
+        <Link to="#" onClick={() => setIsLoginModalOpen(true)}>
+          Login Here
+        </Link>
       </small>
 
       {/* Login Modal */}
       <LoginModal opened={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
-    </>
+    </Box>
   );
 }

@@ -17,12 +17,14 @@ export const Checkin = () => {
     setTimeout(() => {
       setIsLoading(false);
       setIsCheckedIn(true);
+      //! Need to Create a timestamp to the Checkin database Table
       setCheckInTimestamp(Date.now()); // Store the current timestamp
     }, 3000);
   };
 
   useEffect(() => {
     if (isCheckedIn) {
+      //! Need to add update checkout timestamp in the Checkin database Table
       // Perform any checkout-related logic here
       console.log('Checked out');
     }
@@ -40,7 +42,6 @@ export const Checkin = () => {
 
       }}
     >
-      {/* Wrap the content inside a Paper component */}
       <Paper elevation={3} sx={{
         padding: 2, maxWidth: 400, backgroundColor: '#CE9EE4', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%'
       }}>
