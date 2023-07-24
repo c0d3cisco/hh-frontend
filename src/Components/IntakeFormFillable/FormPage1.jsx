@@ -1,21 +1,12 @@
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
-import Checkbox from '@mui/material/Checkbox';
-import FormGroup from '@mui/material/FormGroup';
-import { Button } from '@mui/material';
-import { useState } from 'react';
-
+import { Box, TextField, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel } from '@mui/material';
 
 export default function FormPage1({ formData, handleChange }) {
 
   return (
     <Box>
-      <div style={{ display: 'flex', flexDirection: 'row' }}>
+      <p>Personal Information: </p>
+      <div style={{ display: 'flex', flexDirection: 'row',  width:800, minWidth:500 ,maxWidth:1000 }}>
+        
         <TextField
           required
           id="outlined-required"
@@ -39,8 +30,6 @@ export default function FormPage1({ formData, handleChange }) {
           value={formData.preferred_name}
           onChange={handleChange}
         />
-      </div>
-      <div>
         <TextField
           id="outlined-basic"
           label="Pronouns"
@@ -49,6 +38,38 @@ export default function FormPage1({ formData, handleChange }) {
           onChange={handleChange}
         />
       </div>
+      <div>
+          <p>Your Contact Information: </p>
+          <TextField
+            id="outlined-basic"
+            label="Email"
+            variant="outlined"
+            value={formData.email}
+            onChange={handleChange}
+          />
+          <TextField
+            id="outlined-basic"
+            label="Phone Number"
+            variant="outlined"
+            value={formData.phone}
+            onChange={handleChange}
+          />
+            <FormControl>
+            <FormLabel id="demo-radio-buttons-group-label">Preferred form of contact:</FormLabel>
+            <RadioGroup
+              aria-labelledby="demo-radio-buttons-group-label"
+              defaultValue="none"
+              name="radio-buttons-group"
+              value={formData.contact}
+              onChange={handleChange}
+            >
+              <FormControlLabel value="email" control={<Radio />} label="Email" />
+              <FormControlLabel value="phone" control={<Radio />} label="Phone" />
+              <FormControlLabel value="text" control={<Radio />} label="Text" />
+              <FormControlLabel value="do not contact" control={<Radio />} label="Do Not Contact" />
+            </RadioGroup>
+          </FormControl>
+        </div>
       <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
         <div>
           <p>Emergency Contact: </p>
@@ -113,22 +134,6 @@ export default function FormPage1({ formData, handleChange }) {
             label="Knowledge"
             variant="outlined"
             value={formData.em_knowledge2}
-            onChange={handleChange}
-          />
-        </div>
-        <div>
-          <TextField
-            id="outlined-basic"
-            label="Email"
-            variant="outlined"
-            value={formData.email}
-            onChange={handleChange}
-          />
-          <TextField
-            id="outlined-basic"
-            label="Phone Number"
-            variant="outlined"
-            value={formData.phone}
             onChange={handleChange}
           />
         </div>
