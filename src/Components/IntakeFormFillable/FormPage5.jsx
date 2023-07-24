@@ -1,21 +1,10 @@
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
-import Checkbox from '@mui/material/Checkbox';
-import FormGroup from '@mui/material/FormGroup';
-import { Button } from '@mui/material';
-import { useState } from 'react';
-
+import {Box, TextField} from '@mui/material';
 
 export default function FormPage5({ formData, handleChange }) {
 
   return (
     <Box>
-          <div style={{ display: 'flex', flexDirection: 'column', minWidth:500 ,maxWidth:800 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', width:800, minWidth:500 ,maxWidth:1000 }}>
         <div>
           <p>We would love you to help us create Helen House’s community agreements. What are some guidelines you would like to
             honor as part of your time at Helen House? (for example: no judgmental statements, no stealing, etc.)</p>

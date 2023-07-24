@@ -1,22 +1,11 @@
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
-import Checkbox from '@mui/material/Checkbox';
-import FormGroup from '@mui/material/FormGroup';
-import { Button } from '@mui/material';
-import { useState } from 'react';
-
+import { Box, TextField, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel } from '@mui/material';
 
 export default function FormPage1({ formData, handleChange }) {
 
   return (
     <Box>
       <p>Personal Information: </p>
-      <div style={{ display: 'flex', flexDirection: 'row', minWidth:500 ,maxWidth:800 }}>
+      <div style={{ display: 'flex', flexDirection: 'row',  width:800, minWidth:500 ,maxWidth:1000 }}>
         
         <TextField
           required
@@ -41,8 +30,6 @@ export default function FormPage1({ formData, handleChange }) {
           value={formData.preferred_name}
           onChange={handleChange}
         />
-      </div>
-      <div>
         <TextField
           id="outlined-basic"
           label="Pronouns"

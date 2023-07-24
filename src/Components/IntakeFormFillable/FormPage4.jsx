@@ -1,22 +1,11 @@
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
-import Checkbox from '@mui/material/Checkbox';
-import FormGroup from '@mui/material/FormGroup';
-import { Button } from '@mui/material';
-import { useState } from 'react';
-
+import { Box, TextField, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Checkbox, FormGroup } from '@mui/material';
 
 export default function FormPage4({ formData, handleChange }) {
 
   return (
     <Box>
-           <div style={{ display: 'flex', flexDirection: 'column', minWidth:500 ,maxWidth:800 }}>
-      <div>
+      <div style={{ display: 'flex', flexDirection: 'column',  width:800, minWidth:500 ,maxWidth:1000 }}>
+        <div>
           <p>What specific needs, questions or concerns brought you to Helen House? (Please Check all that apply):</p>
           <FormGroup>
             <FormControlLabel control={<Checkbox />} label="Problems with Family" />
@@ -128,7 +117,7 @@ export default function FormPage4({ formData, handleChange }) {
             onChange={handleChange}
           />
         </div>
-        </div>
+      </div>
     </Box>
   );
 }
