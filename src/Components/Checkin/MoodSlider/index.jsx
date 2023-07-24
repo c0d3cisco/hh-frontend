@@ -23,7 +23,7 @@ const MoodSlider = ({ rating, onRatingChange }) => {
   };
   return (
     <div style={styles.container}>
-      <Typography variant="h4" style={styles.emoji}>
+      <Typography variant="h4" style={styles.emoji} >
         {isTraditional ? traditionalMoodEmojis[rating] : genzMoodEmojis[rating]}
       </Typography>
       <Slider
@@ -51,6 +51,8 @@ const MoodSlider = ({ rating, onRatingChange }) => {
 };
 const styles = {
   container: {
+    display: 'flex',
+    flexDirection: 'column',
     alignItems: 'center',
     marginTop: 20,
   },

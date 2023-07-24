@@ -19,6 +19,12 @@ export default function SignUpForm() {
     setIsLoginModalOpen(true);
   }
 
+  const handleRegister = () => {
+    console.log('Register');
+    // Perform form submission logic here, then navigate to the login page
+    <Link to="/intakeform" style={{ textDecoration: 'none' }}></Link>
+  };
+
   return (
     <>
       <h2>Sign Up Here</h2>
@@ -79,7 +85,7 @@ export default function SignUpForm() {
           fullWidth
           sx={{ mb: 4 }}
         />
-        <Button variant="outlined" color="secondary" type="submit">
+        <Button variant="outlined" color="secondary" type="submit" onClick={handleRegister}>
           Register
         </Button>
       </form>

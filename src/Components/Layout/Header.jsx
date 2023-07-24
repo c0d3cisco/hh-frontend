@@ -64,7 +64,7 @@ export default function ResponsiveAppBar() {
   useEffect(() => {
     // Replace this with your actual authentication logic
     // Set the user role based on authentication state
-    const userIsAuthenticated = true; // Replace this with the actual authentication state
+    const userIsAuthenticated = false; // Replace this with the actual authentication state
     const isAdmin = true; // Replace this with the actual admin role check
     const isStaff = true; // Replace this with the actual staff role check
     const isVolunteer = true; // Replace this with the actual volunteer role check
