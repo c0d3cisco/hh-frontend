@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 
 
 export function LoginModal({ opened, onClose }) {
+
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
@@ -16,10 +17,12 @@ export function LoginModal({ opened, onClose }) {
     setPassword(event.target.value);
   };
 
+    //! Try Catch for logging in to the database
   const handleLoginSubmit = (e) => {
     e.preventDefault();
     console.log('Username:', username);
     console.log('Password:', password);
+
     setUsername('');
     setPassword('');
     onClose();

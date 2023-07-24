@@ -23,14 +23,6 @@ const pages = [
   { name: 'Signup', path: '/signup' },
   { name: 'DataDashboard', path: '/datadashboard' },
 ];
-const settings = [
-  { name: 'User Settings', path: '/usersettings' },
-  { name: 'SignUp Approval', path: '/signupapproval' },
-  { name: 'Data Dashboard', path: '/datadashboard' },
-  { name: 'Logout', path: '/logout' },
-];
-
-// ... (previous imports and code)
 
 export default function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -61,10 +53,11 @@ export default function ResponsiveAppBar() {
     setIsLoginModalOpen(false); // Close the login modal
   };
 
+  //! Replace with getting user role from the user table
   useEffect(() => {
     // Replace this with your actual authentication logic
     // Set the user role based on authentication state
-    const userIsAuthenticated = false; // Replace this with the actual authentication state
+    const userIsAuthenticated = true; // Replace this with the actual authentication state
     const isAdmin = true; // Replace this with the actual admin role check
     const isStaff = true; // Replace this with the actual staff role check
     const isVolunteer = true; // Replace this with the actual volunteer role check
@@ -189,14 +182,14 @@ export default function ResponsiveAppBar() {
             }}
           >
             {pages.map((page) => {
-            // Display the button based on user role
-            if (
-              (userRole === 'guest' && page.name === 'Home') ||
-              (userRole === 'user' && ['Home', 'Checkin'].includes(page.name)) ||
-              (userRole === 'admin') || // Include all pages for admins
-              (userRole === 'staff' && page.name !== 'DataDashboard') ||
-              (userRole === 'volunteer' && ['Home', 'Checkin', 'Logout'].includes(page.name))
-            ) {
+              // Display the button based on user role
+              if (
+                (userRole === 'guest' && page.name === 'Home') ||
+                (userRole === 'user' && ['Home', 'Checkin'].includes(page.name)) ||
+                (userRole === 'admin') || // Include all pages for admins
+                (userRole === 'staff' && page.name !== 'DataDashboard') ||
+                (userRole === 'volunteer' && ['Home', 'Checkin', 'Logout'].includes(page.name))
+              ) {
                 return (
                   <Button
                     component={Link}
@@ -225,11 +218,7 @@ export default function ResponsiveAppBar() {
             )}
           </Box>
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-              </IconButton>
-            </Tooltip>
+            <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
             <Menu
               sx={{ mt: '45px' }}
               id="menu-appbar"
@@ -246,11 +235,7 @@ export default function ResponsiveAppBar() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting.name} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting.name}</Typography>
-                </MenuItem>
-              ))}
+
             </Menu>
           </Box>
         </Toolbar>
