@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { Box, Button } from '@mui/material';
 import { Pagination } from '@mui/material';
+import { useAuth0 } from "@auth0/auth0-react";
+import axios from 'axios';
+
 
 import FormPage1 from './FormPage1';
 import FormPage2 from './FormPage2';
@@ -9,6 +12,7 @@ import FormPage4 from './FormPage4';
 import FormPage5 from './FormPage5';
 
 export default function IntakeFormFillable() {
+
   // Total number of form pages
   const totalFormPages = 5; // Update this based on the number of form pages you have
 
@@ -20,10 +24,103 @@ export default function IntakeFormFillable() {
     // Your form data fields...
   });
 
+  const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
+
   // Function to handle form submission
-  const handleSubmit = () => {
-    // Here you can submit the formData to your API or handle it as needed
-    console.log(formData);
+  const handleSubmit = async () => {
+    // TODO: connect submit to userData table
+    if (!isAuthenticated) {
+      console.log('User not authenticated');
+      return;
+    }
+
+    try {
+      const accessToken = await getAccessTokenSilently({
+      authorizationParams: {
+        audience: "https://helen-house-backend-v3uq.onrender.com",
+        scope: "read:current_user",
+      },
+    });
+
+    const headers = {
+      Authorization: `Bearer ${accessToken}`,
+    }
+// !! verified we are hitting the /api/userData endpoints with the correct auth but needs to be reworked in the todos below
+// TODO - update to POST on /api/userData with the correct association for userId to avoid error (violates foreign key constraint \"userData_userId_fkey\")
+    const response = await axios.put(
+      'https://helen-house-backend-v3uq.onrender.com/api/userData/1',
+      {      
+        formData    
+          // "userId": 1,
+          // "approved": false,
+          // "first_name": "Alex",
+          // "last_name": "Martinez",
+          // "preferred_name": "AM",
+          // "date_of_birth": "1992-04-10",
+          // "pronouns": "they/them",
+          // "em_name": "Emergency Contact 1",
+          // "em_relationship": "Friend",
+          // "em_phone": "123-456-7890",
+          // "em_knowledge": "Yes",
+          // "em_name2": "Emergency Contact 2",
+          // "em_relationship2": "Partner",
+          // "em_phone2": "987-654-3210",
+          // "em_knowledge2": "No",
+          // "q1": "Female",
+          // "q1_other": null,
+          // "q2": "Bisexual",
+          // "q2_other": null,
+          // "email": "alexmartinez@example.com",
+          // "phone": "555-246-8135",
+          // "contact": "Phone",
+          // "ethnicity": "Japanese",
+          // "ethnicity_other": null,
+          // "englishUnderstanding": "No",
+          // "englishUnderstanding_other": null,
+          // "englishAtHome": "No",
+          // "englishAtHome_other": null,
+          // "q3": "No specific health conditions",
+          // "safePlace": "Yes",
+          // "q5": "No",
+          // "q6": "Yes",
+          // "q7": "Yes",
+          // "q8": "Yes",
+          // "q9": "Yes",
+          // "school": "Sample School",
+          // "q10": "No",
+          // "q11": "No",
+          // "q12": "No",
+          // "q13": "No",
+          // "q14": "No",
+          // "q15": "No",
+          // "q16": "No",
+          // "q17": "No",
+          // "q18": "No",
+          // "q19": "Yes",
+          // "q20": "Problems with Family",
+          // "q20_other": null,
+          // "q21": "Friend",
+          // "q21_other": null,
+          // "q22": "4",
+          // "q23": "3",
+          // "q24": "A leader",
+          // "q24_other": null,
+          // "q25": "Be kind to others",
+          // "q26": "Sample data for q26",
+          // "q27": "Sample data for q27"        
+      },
+                // TODO: use formData instead of hardcoded data; verify formData is working as expected
+
+      { headers }
+    );
+
+    console.log('Intake Form Record Created', response);
+    console.log('formData: ', formData);
+  } catch (error) {
+    console.log('Error message:', error.message);
+    console.log('Error response:', error.response);
+  }
+
     // Reset the form after submission (optional)
     setFormData({
       // Reset form data fields...
