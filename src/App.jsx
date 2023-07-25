@@ -8,16 +8,9 @@ import UserSettings from './Pages/UserSettings';
 import { Checkin } from './Pages/Checkin';
 import Dashboard from './Pages/DataDashboard';
 import IntakeForm from './Pages/IntakeForm';
-import { Auth0Provider } from '@auth0/auth0-react'; // Import Auth0Provider
-
 
 export default function App() {
   return (
-    // <Auth0Provider
-    //   domain="dev-asdaiq2qzmt7fozh.us.auth0.com"
-    //   clientId="cfleISlyWfWRhhx6cGjVqryrGFKeCq4V"
-    //   redirectUri={window.location.origin} // Set the redirect URI after login
-    // >
     <Router>
       <Layout >
         <Routes>
@@ -30,7 +23,5 @@ export default function App() {
         </Routes>
       </Layout>
     </Router>
-  // {/* // </Auth0Provider> */ }
-
   );
 }
