@@ -3,7 +3,6 @@ import { Modal, Box, Typography, TextField, Button } from '@mui/material';
 import { Link } from 'react-router-dom';
 import Auth0LoginButton from '../Auth0Login';
 
-
 export function LoginModal({ opened, onClose }) {
 
   const [username, setUsername] = useState('');
@@ -52,9 +51,7 @@ export function LoginModal({ opened, onClose }) {
           borderRadius: 4,
         }}
       >
-        <Typography variant="h6" id="modal-login-title" sx={{ marginBottom: 2 }}>
-          Login
-        </Typography>
+        <Auth0LoginButton/>
         <form onSubmit={handleLoginSubmit}>
           <TextField
             label="Username"
@@ -85,12 +82,13 @@ export function LoginModal({ opened, onClose }) {
             <Button type="submit" variant="contained" color="primary" sx={{ mt: 1 }}>
               Submit
             </Button>
-            <Link to="/signup" style={{ textDecoration: 'none' }}>
+         
+            {/* <Link to="/signup" style={{ textDecoration: 'none' }}>
               <Button type="submit" onClick={handleSignup} variant="contained" color="primary" sx={{ mt: 1 }}>
                 Signup
               </Button>
             
-            </Link>
+            </Link> */}
           </Box>
         </form>
       </Box>
