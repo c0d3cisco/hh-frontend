@@ -5,64 +5,64 @@ import MoodSlider from '../Components/Checkin/MoodSlider';
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from 'axios';
 
+
+
 export const Checkin = () => {
-  const { user, isAuthenticated, getAccessTokenSilently, getIdTokenClaims } = useAuth0();
+  const { user, isAuthenticated, getAccessTokenSilently } = useAuth0(); // Get the isAuthenticated status from Auth0
+
   const [isLoading, setIsLoading] = useState(false);
   const [isCheckedIn, setIsCheckedIn] = useState(false);
   const [moodRating, setMoodRating] = useState(3);
   const [checkInTimestamp, setCheckInTimestamp] = useState(null);
 
-  const getConfig = async () => {
-    try {
-      if (isAuthenticated) {
-        const response = await getAccessTokenSilently();
-        const jwt = response;
-        const config = {
-          headers: { 'Authorization': `Bearer ${jwt}` }
-        };
-        return config;
-      } else {
-        throw new Error('Not Authorized');
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  const [idToken, setIdToken] = React.useState(null);
-  React.useEffect(() => {
-    getIdTokenClaims().then((claims) => {
-      setIdToken(claims.__raw);
-    });
-  }, [getIdTokenClaims]);
 
   const handleCheckIn = async () => {
     setIsLoading(true);
   
     try {
+
+      const token = await getAccessTokenSilently({
+        authorizationParams: {
+          audience: 'https://helen-house-backend-v3uq.onrender.com',
+          scope: "read:current_user",
+        },
+      });
+  
       const headers = {
-        Authorization: `Bearer ${idToken}`, // Remove the extra } from here
-      };
-      const config = await getConfig();
-      const response = await axios.post('https://helen-house-backend-v3uq.onrender.com/api/checkin', {
-        "timeIn": "2023-06-13T22:06:09.649Z",
-        "timeOut": "2023-06-13T22:07:09.649Z",
-        "moodIn": "1",
-        "moodOut": "5",
-        "userId": 1
-      }, { headers });
+        Authorization: `Bearer ${token}`,
+      }
+      console.log('Bearer Access Token', headers);
+  
+      const response = await axios.post(
+        'https://helen-house-backend-v3uq.onrender.com/api/checkin',
+        {
+          "timeIn": "2023-06-13T22:06:09.649Z",
+          "timeOut": "2023-06-13T22:07:09.649Z",
+          "moodIn": "1",
+          "moodOut": "5",
+          "userId": 5,
+          // username: user.name,
+          // moodRating: moodRating,
+          // checkInTimestamp: checkInTimestamp,
+        },
+        { headers }
+      );
+
       console.log('Checkin Record Created', response);
   
       setTimeout(() => {
         setIsLoading(false);
         setIsCheckedIn(true);
-        // setCheckInTimestamp(Date.now()); // Store the current timestamp
+
+        setCheckInTimestamp(Date.now()); // Store the current timestamp
       }, 3000);
     } catch (error) {
-      console.log(user);
-      console.log(error.message);
+      console.log('Error message:', error.message);
+      console.log('Error response:', error.response);
+
     }
   };
+  
 
   useEffect(() => {
     if (isCheckedIn) {
