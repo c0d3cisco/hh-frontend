@@ -29,7 +29,7 @@ export default function FormPage3({ formData, handleChange }) {
             aria-labelledby="demo-radio-buttons-group-label"
             defaultValue=""
             name="radio-buttons-group"
-            value={formData.safePlaceToLive}
+            value={formData.safePlace}
             onChange={handleChange}
           >
             <FormControlLabel value="yes" control={<Radio />} label="Yes" />

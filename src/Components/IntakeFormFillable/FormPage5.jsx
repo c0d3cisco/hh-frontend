@@ -27,7 +27,7 @@ export default function FormPage5({ formData, handleChange }) {
             multiline
             rows={4}
             defaultValue=""
-            value={formData.activitiesYouWantToSee}
+            value={formData.q26}
             onChange={handleChange}
           />
           <p>Lastly, we would love to know why Helen House is important to you?</p>
@@ -37,7 +37,7 @@ export default function FormPage5({ formData, handleChange }) {
             multiline
             rows={4}
             defaultValue=""
-            value={formData.whyHelenHouseIsImportant}
+            value={formData.q27}
             onChange={handleChange}
           />
         </div>
