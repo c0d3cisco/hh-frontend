@@ -1,7 +1,7 @@
 import React from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 
-const AuthProfile = () => {
+const Auth0Profile = () => {
   const { user, isAuthenticated, isLoading } = useAuth0();
 
   if (isLoading) {
@@ -12,11 +12,11 @@ const AuthProfile = () => {
     isAuthenticated && (
       <div>
         <img src={user.picture} alt={user.name} />
-        <h2>{user.name}</h2>
-        <p>{user.email}</p>
+        {/* <h2>{user.name}</h2> */}
+        {/* <p>{user.email}</p> */}
       </div>
     )
   );
 };
 
-export default AuthProfile;
+export default Auth0Profile;

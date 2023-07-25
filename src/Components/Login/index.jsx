@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Modal, Box, Typography, TextField, Button } from '@mui/material';
 import { Link } from 'react-router-dom';
-// import Auth0Login from './Components/Auth0Login'; 
-
+import Auth0LoginButton from '../Auth0Login';
 
 export function LoginModal({ opened, onClose }) {
 
@@ -89,7 +88,7 @@ export function LoginModal({ opened, onClose }) {
               <Button type="submit" onClick={handleSignup} variant="contained" color="primary" sx={{ mt: 1 }}>
                 Signup
               </Button>
-              {/* <Auth0Login /> */}
+            
             </Link>
           </Box>
         </form>

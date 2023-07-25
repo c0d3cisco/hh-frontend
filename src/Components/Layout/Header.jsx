@@ -16,6 +16,10 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import HHLogo from '../../assets/updated_helen_house_logo_cropped_360.png';
 import { LoginModal } from '../Login'; // Import the ModalLogin component
+import Auth0LoginButton from '../Auth0Login';
+import Auth0LogoutButton from '../Auth0Logout';
+import Auth0Profile from '../Auth0Profile';
+import { useAuth0 } from "@auth0/auth0-react";
 
 const pages = [
   { name: 'Home', path: '/' },
@@ -31,6 +35,7 @@ export default function ResponsiveAppBar() {
   const [userRole, setUserRole] = useState('guest'); // 'guest', 'user', 'admin', 'staff', 'volunteer'
   const [activePage, setActivePage] = useState('/');
   const location = useLocation();
+  const { isAuthenticated } = useAuth0(); // Get the isAuthenticated status from Auth0
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -57,12 +62,12 @@ export default function ResponsiveAppBar() {
   useEffect(() => {
     // Replace this with your actual authentication logic
     // Set the user role based on authentication state
-    const userIsAuthenticated = true; // Replace this with the actual authentication state
     const isAdmin = true; // Replace this with the actual admin role check
-    const isStaff = true; // Replace this with the actual staff role check
-    const isVolunteer = true; // Replace this with the actual volunteer role check
+    const isStaff = false; // Replace this with the actual staff role check
+    const isVolunteer = false; // Replace this with the actual volunteer role check
 
-    if (userIsAuthenticated) {
+    console.log('User is authenticated', isAuthenticated)
+    if (isAuthenticated) {
       if (isAdmin) {
         setUserRole('admin');
       } else if (isStaff) {
@@ -75,7 +80,7 @@ export default function ResponsiveAppBar() {
     } else {
       setUserRole('guest');
     }
-  }, []);
+  }, [isAuthenticated]);
 
   useEffect(() => {
     // Update the active page state whenever the location pathname changes
@@ -210,12 +215,21 @@ export default function ResponsiveAppBar() {
             })}
 
             {userRole === 'guest' ? (
-              <Button color="inherit" onClick={handleLoginClick}>
+              <Auth0LoginButton />
+            ) : (
+              <Auth0LogoutButton />
+            )}
+
+            {/* {userRole === 'guest' ? (
+              <Button color="inherit" onClick={loginWithRedirect()}>
                 Login
               </Button>
             ) : (
-              <Button color="inherit">Logout</Button>
-            )}
+              <Button color="inherit" onClick={logout({ logoutParams: { returnTo: window.location.origin } })}>Logout</Button>
+            )} */}
+
+            <Auth0Profile />
+
           </Box>
           <Box sx={{ flexGrow: 0 }}>
             <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
