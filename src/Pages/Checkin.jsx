@@ -4,7 +4,7 @@ import logo from '../assets/updated_helen_house_logo_cropped_360.png';
 import MoodSlider from '../Components/Checkin/MoodSlider';
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from 'axios';
-
+import { getProtectedResource } from '../Services/access.service';
 
 
 export const Checkin = () => {
@@ -21,26 +21,27 @@ export const Checkin = () => {
   
     try {
 
-      const token = await getAccessTokenSilently({
+      const accessToken = await getAccessTokenSilently({
         authorizationParams: {
-          audience: 'https://helen-house-backend-v3uq.onrender.com',
+          // audience: process.env.AUTH0_AUDIENCE,          
+          audience: "https://helen-house-backend-v3uq.onrender.com",
           scope: "read:current_user",
         },
       });
   
       const headers = {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${accessToken}`,
       }
       console.log('Bearer Access Token', headers);
   
       const response = await axios.post(
         'https://helen-house-backend-v3uq.onrender.com/api/checkin',
-        {
+        {          
+          "userId": 1,
           "timeIn": "2023-06-13T22:06:09.649Z",
           "timeOut": "2023-06-13T22:07:09.649Z",
           "moodIn": "1",
           "moodOut": "5",
-          "userId": 5,
           // username: user.name,
           // moodRating: moodRating,
           // checkInTimestamp: checkInTimestamp,
@@ -54,20 +55,23 @@ export const Checkin = () => {
         setIsLoading(false);
         setIsCheckedIn(true);
 
-        setCheckInTimestamp(Date.now()); // Store the current timestamp
+        // setCheckInTimestamp(Date.now()); // Store the current timestamp
       }, 3000);
     } catch (error) {
       console.log('Error message:', error.message);
       console.log('Error response:', error.response);
 
     }
+    
   };
   
 
+
   useEffect(() => {
     if (isCheckedIn) {
-      //! Need to add update checkout timestamp in the Checkin database Table
+      //TODO: Need to add update checkout timestamp in the Checkin database Table
       // Perform any checkout-related logic here
+
       console.log('Checked out');
     }
   }, [isCheckedIn]);
