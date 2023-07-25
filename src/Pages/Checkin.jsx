@@ -2,24 +2,58 @@ import React, { useState, useEffect } from 'react';
 import { Typography, Button, CircularProgress, Box, Paper } from '@mui/material';
 import logo from '../assets/updated_helen_house_logo_cropped_360.png';
 import MoodSlider from '../Components/Checkin/MoodSlider';
+import { useAuth0 } from "@auth0/auth0-react";
+import axios from 'axios';
 
 export const Checkin = () => {
+  const { user, isAuthenticated, getAccessTokenSilently } = useAuth0(); // Get the isAuthenticated status from Auth0
   const [isLoading, setIsLoading] = useState(false);
   const [isCheckedIn, setIsCheckedIn] = useState(false);
   const [moodRating, setMoodRating] = useState(3); // Initial mood rating value
   const [checkInTimestamp, setCheckInTimestamp] = useState(null); // New state for timestamp
 
-  const handleCheckIn = () => {
+  const handleCheckIn = async () => {
     setIsLoading(true);
 
-    // Simulate an API call to submit the timestamp
-    // Replace this with your actual API logic
-    setTimeout(() => {
-      setIsLoading(false);
-      setIsCheckedIn(true);
-      //! Need to Create a timestamp to the Checkin database Table
-      setCheckInTimestamp(Date.now()); // Store the current timestamp
-    }, 3000);
+    try {
+
+      // Get the access token using the useAuth0 hook
+      const accessToken = await getAccessTokenSilently({
+        authorizationParams: {
+          "client_id": "IHAQfPbTBLKqyCKcXlMC2la3MDlVRt9Y",
+          "client_secret": "uUrj8KtKMZZYtgbCt-T3VpUUvndB8X_gBqSd5oR0nROGgpxss7T-SaWRJBeXBakU",
+          "audience": "https://helen-house-backend-v3uq.onrender.com",
+          "grant_type": "client_credentials"
+        }
+      });
+
+      const headers = {
+        Authorization: `Bearer ${accessToken}`,
+      };
+      console.log('Bearer Access Token', headers);
+
+      const response = await axios.post('https://helen-house-backend-v3uq.onrender.com/api/checkin', {
+        "timeIn": "2023-06-13T22:06:09.649Z",
+        "timeOut": "2023-06-13T22:07:09.649Z",
+        "moodIn": "1",
+        "moodOut": "5",
+        "userId": 1
+        // username: user.name,
+        // moodRating: moodRating,
+        // checkInTimestamp: checkInTimestamp,
+      },
+        { headers });
+      console.log('Checkin Record Created', response);
+
+      setTimeout(() => {
+        setIsLoading(false);
+        setIsCheckedIn(true);
+        // setCheckInTimestamp(Date.now()); // Store the current timestamp
+      }, 3000);
+    } catch (error) {
+      console.log(user);
+      console.log(error.message);
+    }
   };
 
   useEffect(() => {

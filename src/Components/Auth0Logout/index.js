@@ -9,9 +9,8 @@ const Auth0LogoutButton = () => {
   return (
     <Button
     type="submit"
-    variant="contained"
+    variant="inherit"
     color="inherit"
-    sx={{ mt: 1 }}
     onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
   >
     Log Out
