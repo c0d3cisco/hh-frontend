@@ -212,11 +212,11 @@ export default function ResponsiveAppBar() {
             )}
 
             {/* {userRole === 'guest' ? (
-              <Button color="inherit" onClick={loginWithRedirect()}>
+              <Button color="inherit" onClick={handleLoginClick}>
                 Login
               </Button>
             ) : (
-              <Button color="inherit" onClick={logout({ logoutParams: { returnTo: window.location.origin } })}>Logout</Button>
+              <Auth0LogoutButton />
             )} */}
 
             {/* <Auth0Profile /> */}
