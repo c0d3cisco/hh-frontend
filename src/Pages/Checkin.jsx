@@ -6,45 +6,53 @@ import { useAuth0 } from "@auth0/auth0-react";
 import axios from 'axios';
 
 export const Checkin = () => {
-  const { user, isAuthenticated, getAccessTokenSilently } = useAuth0(); // Get the isAuthenticated status from Auth0
+  const { user, isAuthenticated, getAccessTokenSilently, getIdTokenClaims } = useAuth0();
   const [isLoading, setIsLoading] = useState(false);
   const [isCheckedIn, setIsCheckedIn] = useState(false);
-  const [moodRating, setMoodRating] = useState(3); // Initial mood rating value
-  const [checkInTimestamp, setCheckInTimestamp] = useState(null); // New state for timestamp
+  const [moodRating, setMoodRating] = useState(3);
+  const [checkInTimestamp, setCheckInTimestamp] = useState(null);
+
+  const getConfig = async () => {
+    try {
+      if (isAuthenticated) {
+        const response = await getAccessTokenSilently();
+        const jwt = response;
+        const config = {
+          headers: { 'Authorization': `Bearer ${jwt}` }
+        };
+        return config;
+      } else {
+        throw new Error('Not Authorized');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const [idToken, setIdToken] = React.useState(null);
+  React.useEffect(() => {
+    getIdTokenClaims().then((claims) => {
+      setIdToken(claims.__raw);
+    });
+  }, [getIdTokenClaims]);
 
   const handleCheckIn = async () => {
     setIsLoading(true);
-
+  
     try {
-
-      // Get the access token using the useAuth0 hook
-      const accessToken = await getAccessTokenSilently({
-        authorizationParams: {
-          "client_id": "IHAQfPbTBLKqyCKcXlMC2la3MDlVRt9Y",
-          "client_secret": "uUrj8KtKMZZYtgbCt-T3VpUUvndB8X_gBqSd5oR0nROGgpxss7T-SaWRJBeXBakU",
-          "audience": "https://helen-house-backend-v3uq.onrender.com",
-          "grant_type": "client_credentials"
-        }
-      });
-
       const headers = {
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${idToken}`, // Remove the extra } from here
       };
-      console.log('Bearer Access Token', headers);
-
+      const config = await getConfig();
       const response = await axios.post('https://helen-house-backend-v3uq.onrender.com/api/checkin', {
         "timeIn": "2023-06-13T22:06:09.649Z",
         "timeOut": "2023-06-13T22:07:09.649Z",
         "moodIn": "1",
         "moodOut": "5",
         "userId": 1
-        // username: user.name,
-        // moodRating: moodRating,
-        // checkInTimestamp: checkInTimestamp,
-      },
-        { headers });
+      }, { headers });
       console.log('Checkin Record Created', response);
-
+  
       setTimeout(() => {
         setIsLoading(false);
         setIsCheckedIn(true);
@@ -72,8 +80,6 @@ export const Checkin = () => {
         alignItems: 'center',
         justifyContent: 'center',
         marginTop: 2,
-        backgroundImage: 'url(https://images.unsplash.com/photo-1612837017391-5b7b7b0b0b0b?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8Y2hlY2t8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80)',
-
       }}
     >
       <Paper elevation={3} sx={{
@@ -125,3 +131,49 @@ export const Checkin = () => {
     </Box>
   );
 };
+
+
+
+
+
+ // {
+
+    // ! Bring Back
+    // Get the access token using the useAuth0 hook
+    // const accessToken = await getAccessTokenSilently({
+    //   authorizationParams: {
+    //     "client_id": "IHAQfPbTBLKqyCKcXlMC2la3MDlVRt9Y",
+    //     "client_secret": "uUrj8KtKMZZYtgbCt-T3VpUUvndB8X_gBqSd5oR0nROGgpxss7T-SaWRJBeXBakU",
+    //     "audience": "https://helen-house-backend-v3uq.onrender.com",
+    //     "grant_type": "client_credentials"
+    //   }
+    // });
+
+    // const headers = {
+    //   Authorization: `Bearer ${accessToken}`,
+    // };
+    // console.log('Bearer Access Token', headers);
+
+    //   const response = await axios.post('https://helen-house-backend-v3uq.onrender.com/api/checkin', {
+    //     "timeIn": "2023-06-13T22:06:09.649Z",
+    //     "timeOut": "2023-06-13T22:07:09.649Z",
+    //     "moodIn": "1",
+    //     "moodOut": "5",
+    //     "userId": 1
+    //     // username: user.name,
+    //     // moodRating: moodRating,
+    //     // checkInTimestamp: checkInTimestamp,
+    //   },
+    //     { headers });
+    //   console.log('Checkin Record Created', response);
+
+    //   setTimeout(() => {
+    //     setIsLoading(false);
+    //     setIsCheckedIn(true);
+    //     // setCheckInTimestamp(Date.now()); // Store the current timestamp
+    //   }, 3000);
+    // } catch (error) {
+    //   console.log(user);
+    //   console.log(error.message);
+    // }
+
