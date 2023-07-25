@@ -4,11 +4,8 @@ import logo from '../assets/updated_helen_house_logo_cropped_360.png';
 import MoodSlider from '../Components/Checkin/MoodSlider';
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from 'axios';
-<<<<<<< HEAD
 import { getProtectedResource } from '../Services/access.service';
 
-=======
->>>>>>> 75e9b7966a84363c1a5850325e30813f28f921e6
 
 export const Checkin = () => {
   const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
@@ -23,13 +20,8 @@ export const Checkin = () => {
   // Function to fetch the user's check-ins from the backend and find the most recent check-in
   const fetchCheckins = async () => {
     try {
-<<<<<<< HEAD
 
       const accessToken = await getAccessTokenSilently({
-=======
-      // Get an access token to authenticate API requests
-      const token = await getAccessTokenSilently({
->>>>>>> 75e9b7966a84363c1a5850325e30813f28f921e6
         authorizationParams: {
           // audience: process.env.AUTH0_AUDIENCE,          
           audience: "https://helen-house-backend-v3uq.onrender.com",
@@ -41,7 +33,6 @@ export const Checkin = () => {
       const headers = {
         Authorization: `Bearer ${accessToken}`,
       }
-<<<<<<< HEAD
       console.log('Bearer Access Token', headers);
   
       const response = await axios.post(
@@ -58,8 +49,6 @@ export const Checkin = () => {
         },
         { headers }
       );
-=======
->>>>>>> 75e9b7966a84363c1a5850325e30813f28f921e6
 
       // Fetch the check-ins for the user from the backend
       const checkinsResponse = await axios.get(`https://helen-house-backend-v3uq.onrender.com/api/checkin/${userId}`, { headers });
@@ -154,12 +143,9 @@ export const Checkin = () => {
       // Simulate a loading state for 3 seconds before re-enabling the button
       setTimeout(() => {
         setIsLoading(false);
-<<<<<<< HEAD
         setIsCheckedIn(true);
 
         // setCheckInTimestamp(Date.now()); // Store the current timestamp
-=======
->>>>>>> 75e9b7966a84363c1a5850325e30813f28f921e6
       }, 3000);
     } catch (error) {
       console.log('Error message:', error.message);
@@ -167,7 +153,6 @@ export const Checkin = () => {
     }
     
   };
-<<<<<<< HEAD
   
 
 
@@ -179,8 +164,6 @@ export const Checkin = () => {
       console.log('Checked out');
     }
   }, [isCheckedIn]);
-=======
->>>>>>> 75e9b7966a84363c1a5850325e30813f28f921e6
 
   return (
     <Box
