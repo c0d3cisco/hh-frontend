@@ -12,8 +12,8 @@ root.render(
       clientId="zgrnMqG55q7J9nykGtYgG8n17B8aDYu2"
       authorizationParams={{
         redirect_uri: window.location.origin,
-        // audience: "https://dev-3c6lxg8hjpdu1ria.us.auth0.com/api/v2/",
-        // scope: "read:current_user update:current_user_metadata"
+        audience: "https://helen-house-backend-v3uq.onrender.com",
+        scope: "read:current_user update:current_user_metadata"
       }}>
       <App />
     </Auth0Provider>
