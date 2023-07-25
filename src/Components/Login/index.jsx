@@ -3,6 +3,7 @@ import { Modal, Box, Typography, TextField, Button } from '@mui/material';
 import { Link } from 'react-router-dom';
 import Auth0LoginButton from '../Auth0Login';
 
+
 export function LoginModal({ opened, onClose }) {
 
   const [username, setUsername] = useState('');
