@@ -1,18 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import {
-  AppBar,
-  Box,
-  Toolbar,
-  IconButton,
-  Typography,
-  Container,
-  Avatar,
-  Button,
-  Tooltip,
-  MenuItem,
-  Menu,
-} from '@mui/material';
+import {AppBar, Box, Toolbar, IconButton, Typography, Container, Avatar, Button, MenuItem, Menu,} from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import HHLogo from '../../assets/updated_helen_house_logo_cropped_360.png';
 import { LoginModal } from '../Login'; // Import the ModalLogin component
@@ -25,7 +13,8 @@ const pages = [
   { name: 'Home', path: '/' },
   { name: 'Checkin', path: '/checkin' },
   { name: 'Signup', path: '/signup' },
-  { name: 'DataDashboard', path: '/datadashboard' },
+  { name: 'Data Dashboard', path: '/datadashboard' },
+  { name: 'Intake Form', path: '/intakeform' },
 ];
 
 export default function ResponsiveAppBar() {
@@ -62,7 +51,7 @@ export default function ResponsiveAppBar() {
   useEffect(() => {
     // Replace this with your actual authentication logic
     // Set the user role based on authentication state
-    const isAdmin = true; // Replace this with the actual admin role check
+    const isAdmin = false; // Replace this with the actual admin role check
     const isStaff = false; // Replace this with the actual staff role check
     const isVolunteer = false; // Replace this with the actual volunteer role check
 
@@ -184,15 +173,17 @@ export default function ResponsiveAppBar() {
               flexGrow: 1,
               display: { xs: 'none', md: 'flex' },
               justifyContent: 'flex-end', // Move buttons to the right
+              alignItems: 'center',
             }}
           >
             {pages.map((page) => {
               // Display the button based on user role
               if (
                 (userRole === 'guest' && page.name === 'Home') ||
-                (userRole === 'user' && ['Home', 'Checkin'].includes(page.name)) ||
+                //TODO Update User Logic to only see Intake Form if not "approved"
+                (userRole === 'user' && ['Home', 'Checkin', 'Intake Form'].includes(page.name)) ||
                 (userRole === 'admin') || // Include all pages for admins
-                (userRole === 'staff' && page.name !== 'DataDashboard') ||
+                (userRole === 'staff' && page.name !== 'Data Dashboard') ||
                 (userRole === 'volunteer' && ['Home', 'Checkin', 'Logout'].includes(page.name))
               ) {
                 return (
@@ -228,7 +219,7 @@ export default function ResponsiveAppBar() {
               <Button color="inherit" onClick={logout({ logoutParams: { returnTo: window.location.origin } })}>Logout</Button>
             )} */}
 
-            <Auth0Profile />
+            {/* <Auth0Profile /> */}
 
           </Box>
           <Box sx={{ flexGrow: 0 }}>

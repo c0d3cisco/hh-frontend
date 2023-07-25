@@ -60,7 +60,7 @@ export default function DashboardSettings() {
             color="primary"
             onClick={() => handleAccountSettingOptionChange('profile')}
           >
-            Profile Settings
+            Update Profile Settings
           </Button>
           <Button
             variant={accountSettingOption === 'security' ? 'contained' : 'outlined'}
