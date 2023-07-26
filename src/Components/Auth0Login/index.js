@@ -18,13 +18,13 @@ const Auth0LoginButton = () => {
         // console.log(user)
         // console.log(userCreate)
         const response = await axios.post('https://helen-house-backend-v3uq.onrender.com/signup', userCreate)
-        console.log(response.data.user.id)
+        // console.log(response.data.user.id)
         localStorage.setItem('userId', response.data.id);
       } catch (error) {
         console.log("User signed up already", error);
         try{
           const response = await axios.post('https://helen-house-backend-v3uq.onrender.com/checkUser', userCreate)
-          console.log(response.data[0].id)
+          // console.log(response.data[0].id)
           localStorage.setItem('userId', response.data[0].id);
           }catch(error){
             console.log(error)

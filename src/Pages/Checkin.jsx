@@ -84,12 +84,10 @@ export const Checkin = () => {
         if (closestCheckIn) {
           console.log('Closest Checkin Id',closestCheckIn.id)
           response = await axios.put(
-            `https://helen-house-backend-v3uq.onrender.com/api/checkinData/${userId}`,
+            `https://helen-house-backend-v3uq.onrender.com/checkinUpdate/${closestCheckIn.id}`,
             {
-              id: closestCheckIn.id,
               timeOut: new Date().toISOString(),
               moodOut: moodRating,
-              userId: userId,
             },
             { headers }
           );

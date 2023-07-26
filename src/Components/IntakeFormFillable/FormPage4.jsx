@@ -29,6 +29,7 @@ export default function FormPage4({ formData, handleChange }) {
             variant="outlined"
             value={formData.q20}
             onChange={handleChange}
+            name='q20'
           />
         </div>
         <div>
@@ -49,6 +50,7 @@ export default function FormPage4({ formData, handleChange }) {
             variant="outlined"
             value={formData.q21}
             onChange={handleChange}
+            name='q21'
           />
         </div>
         <div>
@@ -58,7 +60,7 @@ export default function FormPage4({ formData, handleChange }) {
             <RadioGroup
               row
               aria-labelledby="demo-row-radio-buttons-group-label"
-              name="row-radio-buttons-group"
+              name="q22"
               value={formData.q22}
               onChange={handleChange}
             >
@@ -75,7 +77,7 @@ export default function FormPage4({ formData, handleChange }) {
             <RadioGroup
               row
               aria-labelledby="demo-row-radio-buttons-group-label"
-              name="row-radio-buttons-group"
+              name="q23"
               value={formData.q23}
               onChange={handleChange}
             >
@@ -115,6 +117,7 @@ export default function FormPage4({ formData, handleChange }) {
             variant="outlined"
             value={formData.q24}
             onChange={handleChange}
+            name='q24'
           />
         </div>
       </div>
