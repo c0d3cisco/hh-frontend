@@ -33,7 +33,7 @@ const Home = () => {
         >      
         Get Call
       </Button> */}
-      <img src={logo} alt="Helen House Logo" className='logo' style={{ width: '20%', maxWidth: '400px', }} sx={{marginBottom:20}} />
+      <img src={logo} alt="Helen House Logo" className='logo' style={{ width: '15%', maxWidth: '400px', }} sx={{marginBottom:20}} />
       <RandomQuote sx={{marginTop:10}}/>
     </div>
   );
