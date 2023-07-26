@@ -1,12 +1,22 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-import { Grid, Paper, Button, TextField } from "@mui/material";
+import { Grid, Paper, Button, TextField, Box, Container } from "@mui/material";
 import { LineChart } from '@mui/x-charts';
 import { subMonths, subWeeks, subDays, format } from 'date-fns';
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from 'axios';
+import dayjs from 'dayjs';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+
+// import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker';
+
+
 
 const currentDate = new Date();
+const today = dayjs();
+const yesterday = dayjs().subtract(1, 'day');
+const todayStartOfTheDay = today.startOf('day');
 
 // Generate random data for the chart
 const generateChartData = (numPoints) => {
@@ -22,6 +32,9 @@ export default function DashboardData() {
   const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
 
   const [totalCheckIns, setTotalCheckIns] = useState(0);
+  const [selectedStartDate, setSelectedStartDate] = useState(null);
+  const [selectedEndDate, setSelectedEndDate] = useState(null);
+
 
   const [, updateState] = React.useState();
   const forceUpdate = React.useCallback(() => updateState({}), []);
@@ -220,10 +233,42 @@ export default function DashboardData() {
     }
   };
 
+  const handleStartDateChange = (date) => {
+    setSelectedStartDate(date);
+  };
+
+  const handleEndDateChange = (date) => {
+    setSelectedEndDate(date);
+  };
+
+  const handleDateRangeSelection = async (e) => {
+    e.preventDefault();
+
+    console.log('Start Date From Selector', selectedStartDate);
+    console.log('End Date From Selector', selectedEndDate);
+
+    const startMonthValue = selectedStartDate?.$M + 1;
+    const endMonthValue = selectedEndDate?.$M + 1;
+
+    const startYear = selectedStartDate?.$y.toString();
+    const startMonth = startMonthValue.toString().length === 1 ? ('0' + startMonthValue.toString()) : startMonthValue.toString();
+    const startDay = selectedStartDate?.$D.toString().length === 1 ? ('0' + selectedStartDate?.$D.toString()) : selectedStartDate?.$D.toString();
+
+    const endYear = selectedEndDate?.$y.toString();
+    const endMonth = endMonthValue.toString().length === 1 ? ('0' + endMonthValue.toString()) : endMonthValue.toString();
+    const endDay = selectedEndDate?.$D.toString().length === 1 ? ('0' + selectedEndDate?.$D.toString()) : selectedEndDate?.$D.toString();
+
+    const startDate = `${startYear}-${(startMonth)}-${startDay}`;
+    const endDate = `${endYear}-${endMonth}-${endDay}`;
+
+    console.log('Start Date', startDate);
+    console.log('End Date', endDate);
+    
+  };
 
   useEffect(() => {
     const fetchData = async () => {
-            getTotalDailyCheckins();
+      getTotalDailyCheckins();
       getWeeklyAverageCheckIns();
       getTotalYTDCheckins();
       getTotalCheckinHours();
@@ -231,14 +276,16 @@ export default function DashboardData() {
 
     fetchData();
     forceUpdate();
-  }, [getTotalDailyCheckins, getWeeklyAverageCheckIns, getTotalYTDCheckins, getTotalCheckinHours]); // Add the functions that fetch data from the server to the dependency array
+
+  }, []); // Add the functions that fetch data from the server to the dependency array
+  // }, [getTotalDailyCheckins, getWeeklyAverageCheckIns, getTotalYTDCheckins, getTotalCheckinHours]); // Add the functions that fetch data from the server to the dependency array
 
 
   // State variables for chart data and settings
   const [chartData, setChartData] = React.useState({
     series: [
       { data: generateChartData(7), label: 'Youth Hours' }, // Initial data with 7 points (last 7 days)
-      { data: generateChartData(7), label: 'Staff Hours' },
+      // { data: generateChartData(7), label: 'Staff Hours' },
     ],
     xAxis: [{ scaleType: 'point', data: Array.from({ length: 7 }, (_, i) => format(subDays(currentDate, 7 - i), 'MMM dd')) }], // Last 7 days' labels
   });
@@ -246,7 +293,7 @@ export default function DashboardData() {
   const [weeksBack, setWeeksBack] = React.useState(''); // State for weeks back input
   const [monthsBack, setMonthsBack] = React.useState(''); // State for months back input
   const [daysBack, setDaysBack] = React.useState(''); // State for days back input
-  const [chartWidth, setChartWidth] = React.useState(window.innerWidth > 800 ? 800 : window.innerWidth); // State for chart width
+  // const [chartWidth, setChartWidth] = React.useState(window.innerWidth > 800 ? 800 : window.innerWidth); // State for chart width
   const [selectedDuration, setSelectedDuration] = React.useState(''); // State for selected duration
 
   // New state variables for the data in the cards
@@ -286,7 +333,7 @@ export default function DashboardData() {
 
       const newWidth = Math.max(300, numDays * 100); // Adjust the factor (100) as needed
       setChartData(data);
-      setChartWidth(newWidth);
+      // setChartWidth(newWidth);
       setSelectedDuration(`${numDays} days`);
       setDaysBack('');
     }
@@ -305,7 +352,7 @@ export default function DashboardData() {
       };
       const newWidth = Math.max(300, numWeeks * 100); // Adjust the factor (100) as needed
       setChartData(data);
-      setChartWidth(newWidth);
+      // setChartWidth(newWidth);
       setSelectedDuration(`${numWeeks} weeks`);
       setWeeksBack('');
     }
@@ -324,7 +371,7 @@ export default function DashboardData() {
       };
       const newWidth = Math.max(300, numMonths * 100); // Adjust the factor (100) as needed
       setChartData(data);
-      setChartWidth(newWidth);
+      // setChartWidth(newWidth);
       setSelectedDuration(`${numMonths} months`);
       setMonthsBack('');
     }
@@ -360,7 +407,7 @@ export default function DashboardData() {
     // Function to update chart size based on screen size
     const updateChartSize = () => {
       const newWidth = window.innerWidth > 800 ? 800 : window.innerWidth;
-      setChartWidth(newWidth);
+      // setChartWidth(newWidth);
     };
 
     // Add an event listener to update the chart size when the window is resized
@@ -373,44 +420,76 @@ export default function DashboardData() {
   }, []);
 
   return (
-    <Grid container spacing={2}>
-      {/* Cards with key data metrics */}
-      {/* Card 1 - Total Daily Check-ins */}
-      <Grid item xs={3}>
-        <Paper sx={{ p: 2, height: 100 }}>{`Total Daily Check-ins: ${totalCheckIns}`}</Paper>
-      </Grid>
-      {/* Card 2 - Weekly Average Check-ins */}
-      <Grid item xs={3}>
-        <Paper sx={{ p: 2, height: 100 }}>{`Weekly Average Check-ins: ${weeklyAvgCheckIns.toFixed(2)}`}</Paper>
-      </Grid>
-      {/* Card 3 - YTD Check-ins */}
-      <Grid item xs={3}>
-        <Paper sx={{ p: 2, height: 100 }}>{`YTD Check-ins: ${ytdCheckIns.toFixed(2)}`}</Paper>
-      </Grid>
-      {/* Card 4 - Total Hours */}
-      <Grid item xs={3}>
-        <Paper sx={{ p: 2, height: 100 }}>{`Total Hours: ${totalHours}`}</Paper>
-      </Grid>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <Grid container spacing={2}>
+        {/* Cards with key data metrics */}
+        {/* Card 1 - Total Daily Check-ins */}
+        <Grid item xs={3}>
+          <Paper sx={{ p: 2, height: 100 }}>{`Total Daily Check-ins: ${totalCheckIns}`}</Paper>
+        </Grid>
+        {/* Card 2 - Weekly Average Check-ins */}
+        <Grid item xs={3}>
+          <Paper sx={{ p: 2, height: 100 }}>{`Wkly Avg Check-ins: ${weeklyAvgCheckIns.toFixed(2)}`}</Paper>
+        </Grid>
+        {/* Card 3 - YTD Check-ins */}
+        <Grid item xs={3}>
+          <Paper sx={{ p: 2, height: 100 }}>{`YTD Check-ins: ${ytdCheckIns.toFixed(2)}`}</Paper>
+        </Grid>
+        {/* Card 4 - Total Hours */}
+        <Grid item xs={3}>
+          <Paper sx={{ p: 2, height: 100 }}>{`Total Hours: ${totalHours.toFixed(2)}`}</Paper>
+        </Grid>
 
-      {/* Line Chart */}
-      <Grid item xs={12}>
-        {selectedDuration && <div style={{ textAlign: 'center', marginBottom: 10 }}>{`Showing data for the last ${selectedDuration}`}</div>}
-        <Paper sx={{ p: 2 }}>
-          {/* LineChart component */}
-          <LineChart
-            yAxisLabel="Check-ins"
-            xAxisLabel="Dates"
-            sx={{ width: '100%', height: 300, '& .MuiResponsiveChart-container': {} }}
-            width={chartWidth}
-            height={300}
-            {...chartData}
-            margin={{ top: 20, right: 20, bottom: 60, left: 60 }} // Modify the margin to adjust the space for x-axis
-          />
-        </Paper>
-      </Grid>
+        {/* Line Chart */}
+        <Grid item xs={12}>
+          {selectedDuration && <div style={{ textAlign: 'center', marginBottom: 10 }}>{`Showing data for the last ${selectedDuration}`}</div>}
+          <Paper sx={{ p: 2, height: "40vw" }}>
+            {/* LineChart component */}
 
-      {/* Input and button for days */}
-      <Grid item xs={4}>
+            <LineChart
+              yAxisLabel="Check-ins"
+              xAxisLabel="Dates"
+              legend={{
+                directon: "row",
+                position: {
+                  vertical: "top",
+                  horizontal: "middle"
+                }
+              }}
+              sx={{
+                '--ChartsLegend-itemWidth': "150px",
+                '--ChartsLegend-itemMarkSize': "14px",
+                '--ChartsLegend-labelSpacing': "7px",
+                '--ChartsLegend-rootSpacing': "-4px",
+                "--ChartsLegend-rootOffsetX": "10px",
+                "--ChartsLegend-rootOffsetY": "-7px",
+                width: '100%', '& .MuiResponsiveChart-container': {}
+              }}
+              // width={chartWidth}
+              // height={300}
+              {...chartData}
+              margin={{ top: 20, right: 20, bottom: 30, left: 40 }} // Modify the margin to adjust the space for x-axis
+            />
+          </Paper>
+        </Grid>
+        <form>
+          <Container sx={{ display: 'flex', alignItems: 'space-evenly', justifyContent: 'space-between', marginTop: '12px' }}>
+            <DatePicker
+              label="Start Date"
+              value={selectedStartDate}
+              onChange={handleStartDateChange}
+            />
+            <DatePicker
+              label="End Date"
+              value={selectedStartDate}
+              onChange={handleEndDateChange}
+            />
+            <Button variant="outlined" type='submit' onClick={handleDateRangeSelection}>Go</Button>
+          </Container>
+        </form>
+
+        {/* Input and button for days */}
+        {/* <Grid item xs={4}>
         <TextField
           label="Days Back"
           variant="outlined"
@@ -418,10 +497,11 @@ export default function DashboardData() {
           onChange={(e) => setDaysBack(e.target.value)}
         />
         <Button variant="outlined" onClick={handleDaysBackClick}>Let's Go</Button>
-      </Grid>
+      </Grid> */}
 
-      {/* Input and button for weeks */}
-      <Grid item xs={4}>
+        {/* Input and button for weeks */}
+
+        {/* <Grid item xs={4}>
         <TextField
           label="Weeks Back"
           variant="outlined"
@@ -429,10 +509,10 @@ export default function DashboardData() {
           onChange={(e) => setWeeksBack(e.target.value)}
         />
         <Button variant="outlined" onClick={handleWeeksBackClick}>Let's Go</Button>
-      </Grid>
+      </Grid> */}
 
-      {/* Input and button for months */}
-      <Grid item xs={4} spacing={2}>
+        {/* Input and button for months */}
+        {/* <Grid item xs={4} spacing={2}>
         <TextField
           label="Months Back"
           variant="outlined"
@@ -440,8 +520,9 @@ export default function DashboardData() {
           onChange={(e) => setMonthsBack(e.target.value)}
         />
         <Button variant="outlined" onClick={handleMonthsBackClick}>Let's Go</Button>
-      </Grid>
+      </Grid> */}
 
-    </Grid>
+      </Grid>
+    </LocalizationProvider>
   );
 }
