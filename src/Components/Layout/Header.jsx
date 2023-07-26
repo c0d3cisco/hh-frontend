@@ -181,7 +181,9 @@ export default function ResponsiveAppBar() {
               if (
                 (userRole === 'guest' && page.name === 'Home') ||
                 //TODO Update User Logic to only see Intake Form if not "approved"
-                (userRole === 'user' && ['Home', 'Checkin', 'Intake Form'].includes(page.name)) ||
+                // (userRole === 'user' && ['Home', 'Checkin', 'Intake Form'].includes(page.name)) ||
+              //  !CHANGE BACK AFTER TESTING
+                (userRole === 'user' )||
                 (userRole === 'admin') || // Include all pages for admins
                 (userRole === 'staff' && page.name !== 'Data Dashboard') ||
                 (userRole === 'volunteer' && ['Home', 'Checkin', 'Logout'].includes(page.name))
