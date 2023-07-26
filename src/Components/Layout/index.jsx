@@ -5,12 +5,13 @@ import Footer from './Footer';
 import { useAuth0 } from "@auth0/auth0-react";
 
 export default function Layout({ children }) {
-  const { isLoading } = useAuth0();
+  const { isLoading } = useAuth0(); // Get the Auth0 isLoading status
+
   useEffect(() => {
+    // Log the Auth0 loading state
     if (isLoading) {
       // console.log('Auth0 is loaded', isLoading);
-    }
-    else{
+    } else {
       // console.log('Auth0 is logged out', isLoading);
     }
   }, [isLoading]);

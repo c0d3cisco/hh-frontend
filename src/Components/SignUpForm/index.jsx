@@ -6,21 +6,21 @@ import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
 
 export default function SignUpForm() {
-
-  //! Replace with our Create on the user table to check if username exists already and then create the user
-
+  // State variables for username, password, confirm password, and login modal
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false); // Add state for login modal
   const navigate = useNavigate(); // Use useNavigate hook to access navigation function
 
+  // Function to validate password complexity
   const checkPasswordValidity = () => {
     // Password validation for at least one capital letter, one special character, and one number
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     return password.match(passwordRegex);
   };
 
+  // Event handlers for password and confirm password changes
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
   };
@@ -29,16 +29,19 @@ export default function SignUpForm() {
     setConfirmPassword(event.target.value);
   };
 
+  // Function to handle form submission
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log('handleSubmit');
     console.log(username, password);
 
+    // Check if passwords match
     if (password !== confirmPassword) {
       alert("Passwords do not match.");
       return;
     }
 
+    // Check if password is valid
     if (!checkPasswordValidity()) {
       alert(
         "Password must be at least 8 characters long and include at least one capital letter, one special character, and one number."
@@ -46,11 +49,13 @@ export default function SignUpForm() {
       return;
     }
 
-    // Perform form submission logic here
+    // Perform form submission logic here (e.g., create the user)
 
+    // Navigate to the "IntakeForm" page after successful signup
     navigate("/intakeform");
   };
 
+  // Validate password complexity
   const passwordIsValid = checkPasswordValidity();
 
   return (
