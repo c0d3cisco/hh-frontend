@@ -23,6 +23,7 @@ const generateChartData = (numPoints) => {
 export default function DashboardData() {
   const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
 
+  const [totalCheckIns, setTotalCheckIns] = useState(0);
 
   const getTotalDailyCheckins = async () => {
     if (!isAuthenticated) {
@@ -42,16 +43,17 @@ export default function DashboardData() {
         Authorization: `Bearer ${accessToken}`,
       }
 
-      const date_start = format(new Date(), 'yyyy-MM-dd'); // This line is used to get today's date in the 'YYYY-MM-DD' format
-
+      const currentDate = new Date(); // Get current date
+      const formattedDate = format(currentDate, 'yyyy-MM-dd'); // Format current date
+  
       const response = await axios.get(
-        // `https://helen-house-backend-v3uq.onrender.com/checkinquery?date_start=${date_start}`,
-        `https://helen-house-backend-v3uq.onrender.com/checkinquery?date_start=2023-07-25`,
+        // `https://helen-house-backend-v3uq.onrender.com/checkinquery?date_start=${formattedDate}`,
+        `https://helen-house-backend-v3uq.onrender.com/checkinquery?date_start=2023-07-13`,
 
         { headers }
       );
-
-
+  
+      setTotalCheckIns(response.data);
 
       console.log('Total Daily Checkin Query', response);
     } catch (error) {
@@ -208,7 +210,7 @@ export default function DashboardData() {
       {/* Card 1 - Total Daily Check-ins */}
       <Grid item xs={3}>
         {/* <Paper sx={{ p: 2, height: 100 }}>{`Total Daily Check-ins: ${totalDailyCheckIns}`}</Paper> */}
-        <Paper sx={{ p: 2, height: 100 }}>{`Total Daily Check-ins: ${getTotalDailyCheckins}`}</Paper>
+        <Paper sx={{ p: 2, height: 100 }}>{`Total Daily Check-ins: ${totalCheckIns}`}</Paper>
       </Grid>
       {/* Card 2 - Weekly Average Check-ins */}
       <Grid item xs={3}>
