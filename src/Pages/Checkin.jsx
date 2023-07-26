@@ -6,8 +6,10 @@ import { useAuth0 } from "@auth0/auth0-react";
 import axios from 'axios';
 
 export const Checkin = () => {
-  const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
-  const userId = 6;
+  const { user, isAuthenticated, getAccessTokenSilently } = useAuth0(); // Get the isAuthenticated status from Auth0
+
+  const userId = localStorage.getItem('userId');
+  console.log('userId', userId);
 
   const [isLoading, setIsLoading] = useState(false);
   const [isCheckedIn, setIsCheckedIn] = useState(false);
@@ -15,66 +17,11 @@ export const Checkin = () => {
   const [checkInTimestamp, setCheckInTimestamp] = useState(null);
   const [checkOutTimestamp, setCheckOutTimestamp] = useState(null);
 
-  // Function to fetch the user's check-ins from the backend and find the most recent check-in
-  const fetchCheckins = async () => {
-    try {
-      // Get an access token to authenticate API requests
-      const token = await getAccessTokenSilently({
-        authorizationParams: {
-          audience: 'https://helen-house-backend-v3uq.onrender.com',
-          scope: "read:current_user",
-        },
-      });
-
-      // Set the authorization header with the access token
-      const headers = {
-        Authorization: `Bearer ${token}`,
-      }
-
-      // Fetch the check-ins for the user from the backend
-      const checkinsResponse = await axios.get(`https://helen-house-backend-v3uq.onrender.com/api/checkin/${userId}`, { headers });
-      const checkins = checkinsResponse.data;
-
-      // Find the most recent check-in timestamp from the fetched check-ins
-      let mostRecentCheckIn = null;
-      checkins.forEach(checkin => {
-        if (!mostRecentCheckIn || new Date(checkin.timeIn) > new Date(mostRecentCheckIn.timeIn)) {
-          mostRecentCheckIn = checkin;
-        }
-      });
-
-      // If there's a most recent check-in, update the state with its details
-      if (mostRecentCheckIn) {
-        console.log("Most Recent Check-in:", mostRecentCheckIn);
-        setIsCheckedIn(true);
-        setCheckInTimestamp(mostRecentCheckIn.timeIn);
-        setCheckOutTimestamp(mostRecentCheckIn.timeOut); // Show the check-out timestamp if available
-      } else {
-        // If there are no previous check-ins, reset the check-out timestamp to null
-        setCheckOutTimestamp(null);
-      }
-    } catch (error) {
-      console.log('Error fetching check-ins:', error.message);
-    }
-  };
-
-  // Call the fetchCheckins function only when someone goes to check out
-  const handleCheckOut = () => {
-    if (isCheckedIn) {
-      fetchCheckins();
-    }
-  };
-
-  // Fetch the check-ins when the component mounts to show the most recent check-in on load
-  useEffect(() => {
-    fetchCheckins();
-  }, []);
-
   const handleCheckIn = async () => {
     setIsLoading(true);
 
     try {
-      // Get an access token to authenticate API requests
+      //TODO Maybe make this a useEffect hook
       const token = await getAccessTokenSilently({
         authorizationParams: {
           audience: 'https://helen-house-backend-v3uq.onrender.com',
@@ -82,46 +29,74 @@ export const Checkin = () => {
         },
       });
 
-      // Set the authorization header with the access token
       const headers = {
         Authorization: `Bearer ${token}`,
       }
+      console.log('Bearer Access Token', headers);
 
       let response;
 
       if (!isCheckedIn) {
-        // Check-in the user by sending a POST request to the backend
         response = await axios.post(
           'https://helen-house-backend-v3uq.onrender.com/api/checkin',
           {
             timeIn: new Date().toISOString(),
+            //  timeOut: "2023-06-13T22:07:09.649Z",
             moodIn: moodRating,
+            //  moodOut: "5",
             userId: userId,
           },
           { headers }
         );
-
+        console.log('User', user)
         console.log('CheckIn Record Created', response);
         setCheckInTimestamp(response.data.timeIn);
         setIsCheckedIn(true);
       } else {
-        // Check-out the user by sending a PUT request to update the most recent check-in
-        response = await axios.put(
-          `https://helen-house-backend-v3uq.onrender.com/api/checkin/${checkInTimestamp.id}`,
-          {
-            timeOut: new Date().toISOString(),
-            moodOut: moodRating,
-            userId: userId,
-          },
-          { headers }
-        );
+        console.log('Made it to the checkout logic')
+        // Fetch the check-ins for current user
+        const checkinsResponse = await axios.get(`https://helen-house-backend-v3uq.onrender.com/api/checkinData/${userId}`, { headers });
+        console.log('These are Checkins', checkinsResponse);
+        const checkins = checkinsResponse.data;
+  
+        // Find the closest check-in timestamp to the current time
+        let currentTime = Date.now();
+        let closestCheckIn = null;
+        let closestTimeDiff = Infinity;
+        console.log('Current time',currentTime)
+  
+        checkins.forEach(checkin => {
+          const checkinTimestamp = new Date(checkin.timeIn).getTime();
+          const timeDiff = Math.abs(checkinTimestamp - currentTime);
+  
+          if (timeDiff < closestTimeDiff) {
+            closestTimeDiff = timeDiff;
+            closestCheckIn = checkin;
+          }
+        });
+  
+        console.log("Closest Check-in:", closestCheckIn);
+  
+        // Update the check-in record with the closest check-in ID
+        if (closestCheckIn) {
+          console.log('Closest Checkin Id',closestCheckIn.id)
+          response = await axios.put(
+            `https://helen-house-backend-v3uq.onrender.com/api/checkinData/${userId}`,
+            {
+              id: closestCheckIn.id,
+              timeOut: new Date().toISOString(),
+              moodOut: moodRating,
+              userId: userId,
+            },
+            { headers }
+          );
+  
+          console.log('CheckOut Record Updated', response);
+          setCheckOutTimestamp(response.data.timeOut);
+          setIsCheckedIn(false);
+        }
+      }  
 
-        console.log('CheckOut Record Updated', response);
-        setCheckOutTimestamp(response.data.timeOut);
-        setIsCheckedIn(false);
-      }
-
-      // Simulate a loading state for 3 seconds before re-enabling the button
       setTimeout(() => {
         setIsLoading(false);
       }, 3000);
@@ -130,6 +105,53 @@ export const Checkin = () => {
       console.log('Error response:', error.response);
     }
   };
+
+   // Function to handle checking out
+   const handleCheckOut = () => {
+    handleCheckIn(); // Call the handleCheckIn function to handle the checkout logic
+  };
+
+   // Render content based on the check-in status
+   let checkInStatusContent;
+   if (isLoading) {
+     // Display loading spinner if loading
+     checkInStatusContent = (
+       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+         <CircularProgress color="primary" />
+         <Typography variant="body1" sx={{ fontSize: 18, marginTop: 2 }}>
+           Loading...
+         </Typography>
+       </Box>
+     );
+   } else {
+     // Display the check-in or checkout button based on the check-in status
+     checkInStatusContent = (
+       <Box sx={{}}>
+         <Button
+           variant="contained"
+           onClick={isCheckedIn ? handleCheckOut : handleCheckIn}
+           sx={{
+             marginTop: 5,
+             marginBottom: 2,
+             height: 50,
+             width: 200,
+             borderRadius: 10,
+           }}
+         >
+           {isCheckedIn ? 'Checkout' : 'Check-In'}
+         </Button>
+       </Box>
+     );
+   }
+
+  useEffect(() => {
+    if (isCheckedIn) {
+      //! Need to add update checkout timestamp in the Checkin database Table
+      console.log('Checked in at: ', checkInTimestamp);
+    } else if (!isCheckedIn) {
+      console.log('Checked out at: ', checkOutTimestamp);
+    }
+  }, [isCheckedIn, checkOutTimestamp]);
 
   return (
     <Box
@@ -164,19 +186,8 @@ export const Checkin = () => {
           </Box>
         ) : (
           <Box sx={{}}>
-            <Button
-              variant="contained"
-              onClick={!isCheckedIn ? handleCheckIn : handleCheckOut}
-              sx={{
-                marginTop: 5,
-                marginBottom: 2,
-                height: 50,
-                width: 200,
-                borderRadius: 10,
-              }}
-            >
-              {isCheckedIn ? 'Checkout' : 'Check-In'}
-            </Button>
+            {/* Render the check-in status content */}
+            {checkInStatusContent}
           </Box>
         )}
 
@@ -196,6 +207,7 @@ export const Checkin = () => {
   );
 };
 
+// <-----------------------CODE GRAVEYARD----------------------->
 
 // export const Checkin = () => {
 //   const { user, isAuthenticated, getAccessTokenSilently } = useAuth0(); // Get the isAuthenticated status from Auth0
@@ -307,3 +319,135 @@ export const Checkin = () => {
 //       console.log('Checked out at: ', checkOutTimestamp);
 //     }
 //   }, [isCheckedIn, checkOutTimestamp]);
+
+
+
+//------------------------
+
+// export const Checkin = () => {
+//   const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
+//   const userId = localStorage.getItem('userId');
+//   // console.log('Local Storage User Id',userId)
+
+//   const [isLoading, setIsLoading] = useState(false);
+//   const [isCheckedIn, setIsCheckedIn] = useState(false);
+//   const [moodRating, setMoodRating] = useState(3);
+//   const [checkInTimestamp, setCheckInTimestamp] = useState(null);
+//   const [checkOutTimestamp, setCheckOutTimestamp] = useState(null);
+
+//   // Function to fetch the user's check-ins from the backend and find the most recent check-in
+//   const fetchCheckins = async () => {
+//     try {
+//       // Get an access token to authenticate API requests
+//       const token = await getAccessTokenSilently({
+//         authorizationParams: {
+//           audience: 'https://helen-house-backend-v3uq.onrender.com',
+//           scope: "read:current_user",
+//         },
+//       });
+
+//       // Set the authorization header with the access token
+//       const headers = {
+//         Authorization: `Bearer ${token}`,
+//       }
+
+//       // Fetch the check-ins for the user from the backend
+//       const checkinsResponse = await axios.get(`https://helen-house-backend-v3uq.onrender.com/api/checkin/${userId}`, { headers });
+//       console.log('CheckinsResponse ', checkinsResponse);
+//       const checkins = checkinsResponse.data;
+
+//       // Find the most recent check-in timestamp from the fetched check-ins
+//       let mostRecentCheckIn = null;
+//       checkins.forEach(checkin => {
+//         if (!mostRecentCheckIn || new Date(checkin.timeIn) > new Date(mostRecentCheckIn.timeIn)) {
+//           mostRecentCheckIn = checkin;
+//         }
+//       });
+
+//       // If there's a most recent check-in, update the state with its details
+//       if (mostRecentCheckIn) {
+//         console.log("Most Recent Check-in:", mostRecentCheckIn);
+//         setIsCheckedIn(true);
+//         setCheckInTimestamp(mostRecentCheckIn.timeIn);
+//         setCheckOutTimestamp(mostRecentCheckIn.timeOut); // Show the check-out timestamp if available
+//       } else {
+//         // If there are no previous check-ins, reset the check-out timestamp to null
+//         setCheckOutTimestamp(null);
+//       }
+//     } catch (error) {
+//       console.log('Error fetching check-ins:', error.message);
+//     }
+//   };
+
+//   // Call the fetchCheckins function only when someone goes to check out
+//   const handleCheckOut = () => {
+//     if (isCheckedIn) {
+//       fetchCheckins();
+//     }
+//   };
+
+//   // Fetch the check-ins when the component mounts to show the most recent check-in on load
+//   useEffect(() => {
+//     fetchCheckins();
+//   }, []);
+
+//   const handleCheckIn = async () => {
+//     setIsLoading(true);
+
+//     try {
+//       // Get an access token to authenticate API requests
+//       const token = await getAccessTokenSilently({
+//         authorizationParams: {
+//           audience: 'https://helen-house-backend-v3uq.onrender.com',
+//           scope: "read:current_user",
+//         },
+//       });
+
+//       // Set the authorization header with the access token
+//       const headers = {
+//         Authorization: `Bearer ${token}`,
+//       }
+
+//       let response;
+
+//       if (!isCheckedIn) {
+//         // Check-in the user by sending a POST request to the backend
+//         response = await axios.post(
+//           'https://helen-house-backend-v3uq.onrender.com/api/checkin',
+//           {
+//             timeIn: new Date().toISOString(),
+//             moodIn: moodRating,
+//             userId: userId,
+//           },
+//           { headers }
+//         );
+
+//         console.log('CheckIn Record Created', response);
+//         setCheckInTimestamp(response.data.timeIn);
+//         setIsCheckedIn(true);
+//       } else {
+//         // Check-out the user by sending a PUT request to update the most recent check-in
+//         response = await axios.put(
+//           `https://helen-house-backend-v3uq.onrender.com/api/checkin/${checkInTimestamp.id}`,
+//           {
+//             timeOut: new Date().toISOString(),
+//             moodOut: moodRating,
+//             userId: userId,
+//           },
+//           { headers }
+//         );
+
+//         console.log('CheckOut Record Updated', response);
+//         setCheckOutTimestamp(response.data.timeOut);
+//         setIsCheckedIn(false);
+//       }
+
+//       // Simulate a loading state for 3 seconds before re-enabling the button
+//       setTimeout(() => {
+//         setIsLoading(false);
+//       }, 3000);
+//     } catch (error) {
+//       console.log('Error message:', error.message);
+//       console.log('Error response:', error.response);
+//     }
+//   };
