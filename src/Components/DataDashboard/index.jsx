@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Container, Grid, Paper, Typography, List, ListItemText, ListItemButton } from "@mui/material";
+import { Container, Grid, Paper, Typography, List, ListItemText, ListItemButton, Box } from "@mui/material";
 import DashboardData from "./DashboardData";
 import CustomReports from "./CustomReports";
 import Approvals from "./Approvals";
@@ -19,10 +19,12 @@ export default function DataDashboard({ chartData }) {
     // Main container for the dashboard
     <Container className="dashboard">
       {/* Grid layout with spacing between elements */}
-      <Grid container spacing={3}>
+      {/* <Grid container spacing={3}> */}
+        <Box sx={{ display: 'flex' }}>
         {/* Left Side Nav Bar */}
         {/* Grid item for the left sidebar */}
-        <Grid item xs={4} md={4} className="left-sidebar"> {/* Add className for styling */}
+        {/* <Grid item xs={4} md={4} className="left-sidebar"> Add className for styling */}
+        <Box sx={{ width: '20%' }} className="left-sidebar">
           {/* List to display the left sidebar options */}
           <List className="left-sidebar-list">
             {/* Each ListItemButton represents an option in the left sidebar */}
@@ -39,11 +41,13 @@ export default function DataDashboard({ chartData }) {
               <ListItemText primary="Settings" />
             </ListItemButton>
           </List>
-        </Grid>
+        {/* </Grid> */}
+        </Box>
 
         {/* Hero Section */}
         {/* Grid item for the main content area */}
-        <Grid item xs={8} md={8} className="dashboard-hero"> {/* Add className for styling */}
+        <Box sx={{ width: '80%' }}>
+        {/* <Grid item xs={8} md={8} className="dashboard-hero"> Add className for styling */}
           {/* Paper component for the main content */}
           <Paper sx={{ p: 2, height: "100%" }}>
             {/* Typography component to display the title of the selected option */}
@@ -60,8 +64,10 @@ export default function DataDashboard({ chartData }) {
             {selectedOption === "Approvals" && <Approvals />} {/* Render Approvals component */}
             {selectedOption === "Settings" && <DashboardSettings />} {/* Render Settings component */}
           </Paper>
-        </Grid>
-      </Grid>
+        {/* </Grid> */}
+        </Box>
+      {/* </Grid> */}
+      </Box>
     </Container>
   );
 }
