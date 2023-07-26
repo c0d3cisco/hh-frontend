@@ -22,6 +22,15 @@ The Helen House Application aims to solve the need for a secure and efficient da
 - Moreover, Auth0's flexibility enables easy integration with various identity providers, offering users the option to choose from multiple login options, thereby enhancing user experience and accessibility.
 - To manage user permissions and restrict access to specific features or data based on user roles and levels of authorization, the application implements Auth0's role-based access control.
 
+### Technologies Used
+
+- Frontend: React, Javascript HTML, CSS, SCSS, Jest, jsonwebtoken, Auth0, 
+- Frontend Libraries: Material-UI (MUI), 
+- Backend: Node.js, Express.js, axios, bearer(base-64, bcrypt), Sequelize, CORS, crypto, Jest, jsonwebtoken, pg, sequelize-cli, sqlite3, supertest, Auth0
+- Database: PostgreSQL (Postgres)
+- APIs: RESTful APIs
+- Authentication and Authorization: Auth0
+
 ### Links and Resources
 
 - [Trello Board](https://trello.com/invite/b/KisbuKmx/ATTI8636c0c7dd7edb956f96bd8d8b9555f89A203B63/agile-board-template-trello) for project tracking and management.
