@@ -4,6 +4,8 @@ import logo from '../assets/updated_helen_house_logo_cropped_360.png';
 import MoodSlider from '../Components/Checkin/MoodSlider';
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from 'axios';
+import { getProtectedResource } from '../Services/access.service';
+
 
 export const Checkin = () => {
   const { user, isAuthenticated, getAccessTokenSilently } = useAuth0(); // Get the isAuthenticated status from Auth0
@@ -16,6 +18,7 @@ export const Checkin = () => {
   const [moodRating, setMoodRating] = useState(3);
   const [checkInTimestamp, setCheckInTimestamp] = useState(null);
   const [checkOutTimestamp, setCheckOutTimestamp] = useState(null);
+
 
   const handleCheckIn = async () => {
     setIsLoading(true);
@@ -99,12 +102,27 @@ export const Checkin = () => {
 
       setTimeout(() => {
         setIsLoading(false);
+        setIsCheckedIn(true);
+
+        // setCheckInTimestamp(Date.now()); // Store the current timestamp
       }, 3000);
     } catch (error) {
       console.log('Error message:', error.message);
       console.log('Error response:', error.response);
     }
+    
   };
+  
+
+
+  useEffect(() => {
+    if (isCheckedIn) {
+      //TODO: Need to add update checkout timestamp in the Checkin database Table
+      // Perform any checkout-related logic here
+
+      console.log('Checked out');
+    }
+  }, [isCheckedIn]);
 
    // Function to handle checking out
    const handleCheckOut = () => {

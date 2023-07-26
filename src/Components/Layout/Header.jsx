@@ -188,6 +188,7 @@ export default function ResponsiveAppBar() {
           >
             {pages.map((page) => {
               // Display the button based on user role
+
               if (shouldShowMenuItem(page.name)) {
                 return (
                   <Button

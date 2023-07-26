@@ -1,7 +1,10 @@
 import * as React from 'react';
+import { useState, useEffect } from 'react';
 import { Grid, Paper, Button, TextField } from "@mui/material";
 import { LineChart } from '@mui/x-charts';
 import { subMonths, subWeeks, subDays, format } from 'date-fns';
+import { useAuth0 } from "@auth0/auth0-react";
+import axios from 'axios';
 
 const currentDate = new Date();
 
@@ -12,9 +15,55 @@ const generateChartData = (numPoints) => {
     data.push(Math.floor(Math.random() * 1000));
   }
   return data;
+
 };
 
+
+
 export default function DashboardData() {
+  const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
+
+
+  const getTotalDailyCheckins = async () => {
+    if (!isAuthenticated) {
+      console.log('User not authenticated');
+      return;
+    }
+
+    try {
+      const accessToken = await getAccessTokenSilently({
+        authorizationParams: {
+          audience: "https://helen-house-backend-v3uq.onrender.com",
+          scope: "read:current_user",
+        },
+      });
+
+      const headers = {
+        Authorization: `Bearer ${accessToken}`,
+      }
+
+      const date_start = format(new Date(), 'yyyy-MM-dd'); // This line is used to get today's date in the 'YYYY-MM-DD' format
+
+      const response = await axios.get(
+        // `https://helen-house-backend-v3uq.onrender.com/checkinquery?date_start=${date_start}`,
+        `https://helen-house-backend-v3uq.onrender.com/checkinquery?date_start=2023-07-25`,
+
+        { headers }
+      );
+
+
+
+      console.log('Total Daily Checkin Query', response);
+    } catch (error) {
+      console.log('Error message:', error.message);
+      console.log('Error response:', error.response);
+    }
+  };
+
+  useEffect(() => {
+    getTotalDailyCheckins();
+  }, []);
+
   // State variables for chart data and settings
   const [chartData, setChartData] = React.useState({
     series: [
@@ -158,7 +207,8 @@ export default function DashboardData() {
       {/* Cards with key data metrics */}
       {/* Card 1 - Total Daily Check-ins */}
       <Grid item xs={3}>
-        <Paper sx={{ p: 2, height: 100 }}>{`Total Daily Check-ins: ${totalDailyCheckIns}`}</Paper>
+        {/* <Paper sx={{ p: 2, height: 100 }}>{`Total Daily Check-ins: ${totalDailyCheckIns}`}</Paper> */}
+        <Paper sx={{ p: 2, height: 100 }}>{`Total Daily Check-ins: ${getTotalDailyCheckins}`}</Paper>
       </Grid>
       {/* Card 2 - Weekly Average Check-ins */}
       <Grid item xs={3}>
@@ -179,8 +229,8 @@ export default function DashboardData() {
         <Paper sx={{ p: 2 }}>
           {/* LineChart component */}
           <LineChart
-            yAxisLabel="Check-ins" 
-            xAxisLabel="Dates" 
+            yAxisLabel="Check-ins"
+            xAxisLabel="Dates"
             sx={{ width: '100%', height: 300, '& .MuiResponsiveChart-container': {} }}
             width={chartWidth}
             height={300}
