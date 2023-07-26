@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Grid, Paper, Button, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import axios from 'axios';
+import { useAuth0 } from "@auth0/auth0-react";
 
 export default function Approvals() {
   // State to hold approval items
   const [approvalItems, setApprovalItems] = useState([]);
-  const apiUrl = 'https://example-api.com'; // Replace with your API URL
+  const apiUrl = 'https://helen-house-backend-v3uq.onrender.com/api/userData';
+  const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
 
   // State to hold the selected item for deletion confirmation
   const [selectedItem, setSelectedItem] = useState(null);
@@ -20,7 +22,18 @@ export default function Approvals() {
 
   const fetchApprovalItems = async () => {
     try {
-      const response = await axios.get(`${apiUrl}/items`);
+      const accessToken = await getAccessTokenSilently({
+        authorizationParams: {
+          audience: "https://helen-house-backend-v3uq.onrender.com",
+          scope: "read:current_user",
+        },
+      });
+
+      const headers = {
+        Authorization: `Bearer ${accessToken}`,
+      }
+
+      const response = await axios.get(apiUrl, { headers });
       setApprovalItems(response.data);
     } catch (error) {
       console.log('Error fetching approval items:', error.message);
@@ -40,8 +53,19 @@ export default function Approvals() {
   // Function to handle approving/unapproving an approval item
   const handleApproveItem = async (item) => {
     try {
+      const accessToken = await getAccessTokenSilently({
+        authorizationParams: {
+          audience: "https://helen-house-backend-v3uq.onrender.com",
+          scope: "read:current_user",
+        },
+      });
+
+      const headers = {
+        Authorization: `Bearer ${accessToken}`,
+      }
+
       // Update approval status in the backend
-      await axios.put(`${apiUrl}/items/${item.id}`, { approved: !item.approved });
+      await axios.put(`${apiUrl}/${item.userId}`, { approved: true }, { headers });
       
       // Update approval status in the frontend
       setApprovalItems((prevItems) =>
@@ -59,7 +83,7 @@ export default function Approvals() {
   const handleDeleteItem = async () => {
     try {
       // Perform delete action for the selected item in the backend
-      await axios.delete(`${apiUrl}/items/${selectedItem.id}`);
+      await axios.delete(`${apiUrl}/${selectedItem.id}`);
       
       // Remove the item from the state in the frontend
       setApprovalItems((prevItems) => prevItems.filter((item) => item.id !== selectedItem.id));
@@ -83,22 +107,34 @@ export default function Approvals() {
     setDeleteConfirmationOpen(false); // Close the delete confirmation dialog
     setSelectedItem(null); // Reset the selected item
   };
-
+  let i = 1;
   return (
     <div>
       <h2>Approvals</h2>
       <Grid container spacing={2}>
-        {approvalItems.map((item) => (
-          <Grid item xs={12} sm={6} md={4} key={item.id}>
+        {approvalItems.map((person) => (
+          <Grid item xs={12} sm={6} md={4} key={person.id}>
             <Paper elevation={3} style={{ padding: '16px' }}>
-              <h3>{item.title}</h3>
-              <p>{item.content}</p>
-              <Button onClick={() => handleExpandItem(item)}>Expand</Button>
-              {item.expanded && (
+              <h2>{person.preferred_name}</h2>
+              <h3>{person.first_name} {person.last_name}</h3>
+              <Button onClick={() => handleExpandItem(person)}>Expand</Button>
+              {person.expanded && (
                 <div>
-                  <p>Expanded content for {item.title} goes here.</p>
-                  <Button onClick={() => handleApproveItem(item)}>{item.approved ? 'Unapprove' : 'Approve'}</Button>
-                  <Button onClick={() => handleDeleteConfirmation(item)}>Delete</Button>
+                  {
+                    Object.entries(person).map((data) => (
+                      data.map((item) => {
+                        if(i === 1) {
+                          i = i - 1
+                          return <p><strong>{item}</strong></p>
+                        } else {
+                          i = i + 1
+                          return <p>{item?.toString()}</p>
+                        }
+                      })
+                    ))
+                  }
+                  <Button onClick={() => handleApproveItem(person)}>{person.approved ? 'Unapprove' : 'Approve'}</Button>
+                  <Button onClick={() => handleDeleteConfirmation(person)}>Delete</Button>
                 </div>
               )}
             </Paper>
