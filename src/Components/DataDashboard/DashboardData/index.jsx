@@ -18,11 +18,13 @@ const generateChartData = (numPoints) => {
 
 };
 
-
-
 export default function DashboardData() {
   const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
 
+  const [totalCheckIns, setTotalCheckIns] = useState(0);
+
+  const [, updateState] = React.useState();
+  const forceUpdate = React.useCallback(() => updateState({}), []);
 
   const getTotalDailyCheckins = async () => {
     if (!isAuthenticated) {
@@ -42,16 +44,16 @@ export default function DashboardData() {
         Authorization: `Bearer ${accessToken}`,
       }
 
-      const date_start = format(new Date(), 'yyyy-MM-dd'); // This line is used to get today's date in the 'YYYY-MM-DD' format
+      const currentDate = new Date(); // Get current date
+      const formattedDate = format(currentDate, 'yyyy-MM-dd'); // Format current date
 
       const response = await axios.get(
-        // `https://helen-house-backend-v3uq.onrender.com/checkinquery?date_start=${date_start}`,
-        `https://helen-house-backend-v3uq.onrender.com/checkinquery?date_start=2023-07-25`,
+        `https://helen-house-backend-v3uq.onrender.com/totalDailyCheckins?date_start=${formattedDate}`,
 
         { headers }
       );
 
-
+      setTotalCheckIns(response.data.uniqueCheckinUsers);
 
       console.log('Total Daily Checkin Query', response);
     } catch (error) {
@@ -60,9 +62,177 @@ export default function DashboardData() {
     }
   };
 
+  const getWeeklyAverageCheckIns = async () => {
+    if (!isAuthenticated) {
+      console.log('User not authenticated');
+      return;
+    }
+
+    try {
+      const accessToken = await getAccessTokenSilently({
+        authorizationParams: {
+          audience: "https://helen-house-backend-v3uq.onrender.com",
+          scope: "read:current_user",
+        },
+      });
+
+      const headers = {
+        Authorization: `Bearer ${accessToken}`,
+      }
+
+      const response = await axios.get(
+        `https://helen-house-backend-v3uq.onrender.com/weeklyAverage?date_start=${format(subDays(new Date(), 7), 'yyyy-MM-dd')}`,
+        { headers }
+      );
+
+      console.log('Weekly Average Check-in Query', response);
+      setWeeklyAvgCheckIns(response.data.reduce((prev, curr) => prev + curr.averageTimeInHours + curr.averageTimeInMinutes / 60, 0) / response.data.length);
+
+    } catch (error) {
+      console.log('Error message:', error.message);
+      console.log('Error response:', error.response);
+    }
+  };
+
+  const getTotalYTDCheckins = async () => {
+    if (!isAuthenticated) {
+      console.log('User not authenticated');
+      return;
+    }
+
+    try {
+      const accessToken = await getAccessTokenSilently({
+        authorizationParams: {
+          audience: "https://helen-house-backend-v3uq.onrender.com",
+          scope: "read:current_user",
+        },
+      });
+
+      const headers = {
+        Authorization: `Bearer ${accessToken}`,
+      };
+
+      const response = await axios.get(
+        `https://helen-house-backend-v3uq.onrender.com/totalYearlyCheckins`,
+        { headers }
+      );
+
+      setYtdCheckIns(response.data.totalCheckinsYearToDate);
+
+      console.log('YTD Check-in Query', response);
+    } catch (error) {
+      console.log('Error message:', error.message);
+      console.log('Error response:', error.response);
+    }
+  };
+
+  const getTotalCheckinHours = async () => {
+    if (!isAuthenticated) {
+      console.log('User not authenticated');
+      return;
+    }
+
+    try {
+      const accessToken = await getAccessTokenSilently({
+        authorizationParams: {
+          audience: "https://helen-house-backend-v3uq.onrender.com",
+          scope: "read:current_user",
+        },
+      });
+
+      const headers = {
+        Authorization: `Bearer ${accessToken}`,
+      };
+
+      const response = await axios.get(
+        `https://helen-house-backend-v3uq.onrender.com/totalCheckinHours`,
+        { headers }
+      );
+
+      setTotalHours(response.data.totalHours);
+
+      console.log('Total Check-in Hours Query', response);
+    } catch (error) {
+      console.log('Error message:', error.message);
+      console.log('Error response:', error.response);
+    }
+  };
+
+  const getUniqueUsersPerWeek = async () => {
+    if (!isAuthenticated) {
+      console.log('User not authenticated');
+      return [];
+    }
+
+    try {
+      const accessToken = await getAccessTokenSilently({
+        authorizationParams: {
+          audience: "https://helen-house-backend-v3uq.onrender.com",
+          scope: "read:current_user",
+        },
+      });
+
+      const headers = {
+        Authorization: `Bearer ${accessToken}`,
+      }
+
+      const response = await axios.get(
+        `https://helen-house-backend-v3uq.onrender.com/uniqueUsersPerWeek`,
+        { headers }
+      );
+
+      return response.data.uniqueCheckinUsers;
+    } catch (error) {
+      console.log('Error message:', error.message);
+      console.log('Error response:', error.response);
+      return [];
+    }
+  };
+
+  const getTotalHoursPerWeek = async () => {
+    if (!isAuthenticated) {
+      console.log('User not authenticated');
+      return [];
+    }
+
+    try {
+      const accessToken = await getAccessTokenSilently({
+        authorizationParams: {
+          audience: "https://helen-house-backend-v3uq.onrender.com",
+          scope: "read:current_user",
+        },
+      });
+
+      const headers = {
+        Authorization: `Bearer ${accessToken}`,
+      }
+
+      const response = await axios.get(
+        `https://helen-house-backend-v3uq.onrender.com/totalHoursPerWeek`,
+        { headers }
+      );
+
+      return response.data.totalHours;
+    } catch (error) {
+      console.log('Error message:', error.message);
+      console.log('Error response:', error.response);
+      return [];
+    }
+  };
+
+
   useEffect(() => {
-    getTotalDailyCheckins();
-  }, []);
+    const fetchData = async () => {
+            getTotalDailyCheckins();
+      getWeeklyAverageCheckIns();
+      getTotalYTDCheckins();
+      getTotalCheckinHours();
+    };
+
+    fetchData();
+    forceUpdate();
+  }, [getTotalDailyCheckins, getWeeklyAverageCheckIns, getTotalYTDCheckins, getTotalCheckinHours]); // Add the functions that fetch data from the server to the dependency array
+
 
   // State variables for chart data and settings
   const [chartData, setChartData] = React.useState({
@@ -207,8 +377,7 @@ export default function DashboardData() {
       {/* Cards with key data metrics */}
       {/* Card 1 - Total Daily Check-ins */}
       <Grid item xs={3}>
-        {/* <Paper sx={{ p: 2, height: 100 }}>{`Total Daily Check-ins: ${totalDailyCheckIns}`}</Paper> */}
-        <Paper sx={{ p: 2, height: 100 }}>{`Total Daily Check-ins: ${getTotalDailyCheckins}`}</Paper>
+        <Paper sx={{ p: 2, height: 100 }}>{`Total Daily Check-ins: ${totalCheckIns}`}</Paper>
       </Grid>
       {/* Card 2 - Weekly Average Check-ins */}
       <Grid item xs={3}>
