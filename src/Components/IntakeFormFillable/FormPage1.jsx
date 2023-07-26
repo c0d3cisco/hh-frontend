@@ -82,10 +82,10 @@ export default function FormPage1({ formData, handleChange }) {
               value={formData.contact}
               onChange={handleChange}
             >
-              <FormControlLabel value="email" control={<Radio />} label="Email" />
-              <FormControlLabel value="phone" control={<Radio />} label="Phone" />
-              <FormControlLabel value="text" control={<Radio />} label="Text" />
-              <FormControlLabel value="do not contact" control={<Radio />} label="Do Not Contact" />
+              <FormControlLabel value="Email" control={<Radio />} label="Email" />
+              <FormControlLabel value="Phone" control={<Radio />} label="Phone" />
+              <FormControlLabel value="Text" control={<Radio />} label="Text" />
+              <FormControlLabel value="Do not contact" control={<Radio />} label="Do Not Contact" />
             </RadioGroup>
           </FormControl>
         </div>
