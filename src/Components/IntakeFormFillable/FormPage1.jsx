@@ -14,6 +14,7 @@ export default function FormPage1({ formData, handleChange }) {
           defaultValue=""
           value={formData.first_name}
           onChange={handleChange}
+          name='first_name'
         />
         <TextField
           required
@@ -22,6 +23,7 @@ export default function FormPage1({ formData, handleChange }) {
           defaultValue=""
           value={formData.last_name}
           onChange={handleChange}
+          name='last_name'
         />
         <TextField
           id="outlined-basic"
@@ -29,6 +31,7 @@ export default function FormPage1({ formData, handleChange }) {
           variant="outlined"
           value={formData.preferred_name}
           onChange={handleChange}
+          name='preferred_name'
         />
         <TextField
           id="outlined-basic"
@@ -36,6 +39,20 @@ export default function FormPage1({ formData, handleChange }) {
           variant="outlined"
           value={formData.pronouns}
           onChange={handleChange}
+          name='pronouns'
+        />
+            <TextField
+          required
+          id="outlined-basic"
+          label="Date of Birth"
+          variant="outlined"
+          value={formData.date_of_birth}
+          onChange={handleChange}
+          name='date_of_birth'
+          type='date' // Set the input type to 'date' for a date picker
+          InputLabelProps={{
+            shrink: true,
+          }}
         />
       </div>
       <div>
@@ -46,6 +63,7 @@ export default function FormPage1({ formData, handleChange }) {
             variant="outlined"
             value={formData.email}
             onChange={handleChange}
+            name='email'
           />
           <TextField
             id="outlined-basic"
@@ -53,20 +71,21 @@ export default function FormPage1({ formData, handleChange }) {
             variant="outlined"
             value={formData.phone}
             onChange={handleChange}
+            name='phone'
           />
             <FormControl>
             <FormLabel id="demo-radio-buttons-group-label">Preferred form of contact:</FormLabel>
             <RadioGroup
               aria-labelledby="demo-radio-buttons-group-label"
               defaultValue="none"
-              name="radio-buttons-group"
+              name="contact"
               value={formData.contact}
               onChange={handleChange}
             >
-              <FormControlLabel value="email" control={<Radio />} label="Email" />
-              <FormControlLabel value="phone" control={<Radio />} label="Phone" />
-              <FormControlLabel value="text" control={<Radio />} label="Text" />
-              <FormControlLabel value="do not contact" control={<Radio />} label="Do Not Contact" />
+              <FormControlLabel value="Email" control={<Radio />} label="Email" />
+              <FormControlLabel value="Phone" control={<Radio />} label="Phone" />
+              <FormControlLabel value="Text" control={<Radio />} label="Text" />
+              <FormControlLabel value="Do not contact" control={<Radio />} label="Do Not Contact" />
             </RadioGroup>
           </FormControl>
         </div>
@@ -80,6 +99,7 @@ export default function FormPage1({ formData, handleChange }) {
             defaultValue=""
             value={formData.em_name}
             onChange={handleChange}
+            name='em_name'
           />
           <TextField
             required
@@ -88,6 +108,7 @@ export default function FormPage1({ formData, handleChange }) {
             defaultValue=""
             value={formData.em_relationship}
             onChange={handleChange}
+            name='em_relationship'
           />
           <TextField
             required
@@ -96,6 +117,7 @@ export default function FormPage1({ formData, handleChange }) {
             defaultValue=""
             value={formData.em_phone}
             onChange={handleChange}
+            name='em_phone'
           />
           <TextField
             required
@@ -104,6 +126,7 @@ export default function FormPage1({ formData, handleChange }) {
             defaultValue=""
             value={formData.em_knowledge}
             onChange={handleChange}
+            name='em_knowledge'
           />
         </div>
         <div>
@@ -114,6 +137,7 @@ export default function FormPage1({ formData, handleChange }) {
             variant="outlined"
             value={formData.em_name2}
             onChange={handleChange}
+            name='em_name2'
           />
           <TextField
             id="outlined-basic"
@@ -121,6 +145,7 @@ export default function FormPage1({ formData, handleChange }) {
             variant="outlined"
             value={formData.em_relationship2}
             onChange={handleChange}
+            name='em_relationship2'
           />
           <TextField
             id="outlined-basic"
@@ -128,6 +153,7 @@ export default function FormPage1({ formData, handleChange }) {
             variant="outlined"
             value={formData.em_phone2}
             onChange={handleChange}
+            name='em_phone2'
           />
           <TextField
             id="outlined-basic"
@@ -135,7 +161,9 @@ export default function FormPage1({ formData, handleChange }) {
             variant="outlined"
             value={formData.em_knowledge2}
             onChange={handleChange}
+            name='em_knowledge2'
           />
+  
         </div>
       </div>
     </Box>

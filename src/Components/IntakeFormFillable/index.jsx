@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Button } from '@mui/material';
 import { Pagination } from '@mui/material';
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from 'axios';
-
 
 import FormPage1 from './FormPage1';
 import FormPage2 from './FormPage2';
@@ -12,23 +11,76 @@ import FormPage4 from './FormPage4';
 import FormPage5 from './FormPage5';
 
 export default function IntakeFormFillable() {
-
-  // Total number of form pages
-  const totalFormPages = 5; // Update this based on the number of form pages you have
-
-  // Current page state for pagination
-  const [currentPage, setCurrentPage] = useState(1);
-
-  // State to store form data
-  const [formData, setFormData] = useState({
-    // Your form data fields...
-  });
-
+  const totalFormPages = 5;
+  const userId = localStorage.getItem('userId');
   const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
 
-  // Function to handle form submission
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const [formData, setFormData] = useState(() => {
+    const storedFormData = localStorage.getItem('formData');
+
+    return storedFormData ? JSON.parse(storedFormData) : {
+      first_name: '',
+      last_name: '',
+      preferred_name: null,
+      date_of_birth: '',
+      pronouns: null,
+      em_name: '',
+      em_relationship: '',
+      em_phone: '',
+      em_knowledge: '',
+      em_name2: null,
+      em_relationship2: null,
+      em_phone2: null,
+      em_knowledge2: null,
+      q1: null,
+      q1_other: null,
+      q2: null,
+      q2_other: null,
+      email: null,
+      phone: null,
+      contact: null,
+      ethnicity: null,
+      ethnicity_other: null,
+      englishUnderstanding: null,
+      englishUnderstanding_other: null,
+      englishAtHome: null,
+      englishAtHome_other: null,
+      q3: null,
+      safePlace: null,
+      q5: null,
+      q6: null,
+      q7: null,
+      q8: null,
+      q9: null,
+      school: null,
+      q10: null,
+      q11: null,
+      q12: null,
+      q13: null,
+      q14: null,
+      q15: null,
+      q16: null,
+      q17: null,
+      q18: null,
+      q19: null,
+      q20: null,
+      q20_other: null,
+      q21: null,
+      q21_other: null,
+      q22: null,
+      q23: null,
+      q24: null,
+      q24_other: null,
+      q25: null,
+      q26: null,
+      q27: null
+    };
+  });
+
   const handleSubmit = async () => {
-    // TODO: connect submit to userData table
+    console.log('Form Data', formData);
     if (!isAuthenticated) {
       console.log('User not authenticated');
       return;
@@ -36,131 +88,194 @@ export default function IntakeFormFillable() {
 
     try {
       const accessToken = await getAccessTokenSilently({
-      authorizationParams: {
-        audience: "https://helen-house-backend-v3uq.onrender.com",
-        scope: "read:current_user",
-      },
-    });
+        authorizationParams: {
+          audience: "https://helen-house-backend-v3uq.onrender.com",
+          scope: "read:current_user",
+        },
+      });
 
-    const headers = {
-      Authorization: `Bearer ${accessToken}`,
+      const headers = {
+        Authorization: `Bearer ${accessToken}`,
+      }
+
+      const response = await axios.post(
+        `https://helen-house-backend-v3uq.onrender.com/api/userData`,
+        {
+          userId: userId,
+          ...formData
+        },
+        { headers }
+      );
+      console.log('Intake Form Record Created', response);
+
+      // Clear the form data from local storage after successful submission
+      localStorage.removeItem('formData');
+      // Reset the form after submission (optional)
+      setFormData({
+        first_name: '',
+        last_name: '',
+        preferred_name: null,
+        date_of_birth: '',
+        pronouns: null,
+        em_name: '',
+        em_relationship: '',
+        em_phone: '',
+        em_knowledge: '',
+        em_name2: null,
+        em_relationship2: null,
+        em_phone2: null,
+        em_knowledge2: null,
+        q1: null,
+        q1_other: null,
+        q2: null,
+        q2_other: null,
+        email: null,
+        phone: null,
+        contact: null,
+        ethnicity: null,
+        ethnicity_other: null,
+        englishUnderstanding: null,
+        englishUnderstanding_other: null,
+        englishAtHome: null,
+        englishAtHome_other: null,
+        q3: null,
+        safePlace: null,
+        q5: null,
+        q6: null,
+        q7: null,
+        q8: null,
+        q9: null,
+        school: null,
+        q10: null,
+        q11: null,
+        q12: null,
+        q13: null,
+        q14: null,
+        q15: null,
+        q16: null,
+        q17: null,
+        q18: null,
+        q19: null,
+        q20: null,
+        q20_other: null,
+        q21: null,
+        q21_other: null,
+        q22: null,
+        q23: null,
+        q24: null,
+        q24_other: null,
+        q25: null,
+        q26: null,
+        q27: null
+      });
+
+      // Refresh the page after successful submission
+      window.location.reload();
+
+      // Redirect or show a success message if needed
+    } catch (error) {
+      console.log('Error message:', error.message);
+      console.log('Error response:', error.response);
     }
-// !! verified we are hitting the /api/userData endpoints with the correct auth but needs to be reworked in the todos below
-// TODO - update to POST on /api/userData with the correct association for userId to avoid error (violates foreign key constraint \"userData_userId_fkey\")
-    const response = await axios.put(
-      'https://helen-house-backend-v3uq.onrender.com/api/userData/1',
-      {      
-        formData    
-          // "userId": 1,
-          // "approved": false,
-          // "first_name": "Alex",
-          // "last_name": "Martinez",
-          // "preferred_name": "AM",
-          // "date_of_birth": "1992-04-10",
-          // "pronouns": "they/them",
-          // "em_name": "Emergency Contact 1",
-          // "em_relationship": "Friend",
-          // "em_phone": "123-456-7890",
-          // "em_knowledge": "Yes",
-          // "em_name2": "Emergency Contact 2",
-          // "em_relationship2": "Partner",
-          // "em_phone2": "987-654-3210",
-          // "em_knowledge2": "No",
-          // "q1": "Female",
-          // "q1_other": null,
-          // "q2": "Bisexual",
-          // "q2_other": null,
-          // "email": "alexmartinez@example.com",
-          // "phone": "555-246-8135",
-          // "contact": "Phone",
-          // "ethnicity": "Japanese",
-          // "ethnicity_other": null,
-          // "englishUnderstanding": "No",
-          // "englishUnderstanding_other": null,
-          // "englishAtHome": "No",
-          // "englishAtHome_other": null,
-          // "q3": "No specific health conditions",
-          // "safePlace": "Yes",
-          // "q5": "No",
-          // "q6": "Yes",
-          // "q7": "Yes",
-          // "q8": "Yes",
-          // "q9": "Yes",
-          // "school": "Sample School",
-          // "q10": "No",
-          // "q11": "No",
-          // "q12": "No",
-          // "q13": "No",
-          // "q14": "No",
-          // "q15": "No",
-          // "q16": "No",
-          // "q17": "No",
-          // "q18": "No",
-          // "q19": "Yes",
-          // "q20": "Problems with Family",
-          // "q20_other": null,
-          // "q21": "Friend",
-          // "q21_other": null,
-          // "q22": "4",
-          // "q23": "3",
-          // "q24": "A leader",
-          // "q24_other": null,
-          // "q25": "Be kind to others",
-          // "q26": "Sample data for q26",
-          // "q27": "Sample data for q27"        
-      },
-                // TODO: use formData instead of hardcoded data; verify formData is working as expected
-
-      { headers }
-    );
-
-    console.log('Intake Form Record Created', response);
-    console.log('formData: ', formData);
-  } catch (error) {
-    console.log('Error message:', error.message);
-    console.log('Error response:', error.response);
-  }
-
-    // Reset the form after submission (optional)
-    setFormData({
-      // Reset form data fields...
-    });
   };
 
-  // Function to handle changes in form fields
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target;
     if (type === 'checkbox') {
-      // Handle checkbox field
       setFormData((prevFormData) => ({
         ...prevFormData,
-        // Update checkbox value in form data
+        [name]: checked,
+      }));
+    } else if (type === 'radio') {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        [name]: value,
       }));
     } else {
-      // Handle other fields
       setFormData((prevFormData) => ({
         ...prevFormData,
-        [name]: type === 'radio' ? value : value.trim(),
+        [name]: value.trim(),
       }));
     }
   };
 
-  // Function to handle next page button click
+  useEffect(() => {
+    const initialValues = {
+      first_name: localStorage.getItem('first_name') || '',
+      last_name: localStorage.getItem('last_name') || '',
+      preferred_name: localStorage.getItem('preferred_name') || null,
+      date_of_birth: localStorage.getItem('date_of_birth') || '',
+      pronouns: localStorage.getItem('pronouns') || null,
+      em_name: localStorage.getItem('em_name') || '',
+      em_relationship: localStorage.getItem('em_relationship') || '',
+      em_phone: localStorage.getItem('em_phone') || '',
+      em_knowledge: localStorage.getItem('em_knowledge') || '',
+      em_name2: localStorage.getItem('em_name2') || null,
+      em_relationship2: localStorage.getItem('em_relationship2') || null,
+      em_phone2: localStorage.getItem('em_phone2') || null,
+      em_knowledge2: localStorage.getItem('em_knowledge2') || null,
+      q1: localStorage.getItem('q1') || null,
+      q1_other: localStorage.getItem('q1_other') || null,
+      q2: localStorage.getItem('q2') || null,
+      q2_other: localStorage.getItem('q2_other') || null,
+      email: localStorage.getItem('email') || null,
+      phone: localStorage.getItem('phone') || null,
+      contact: localStorage.getItem('contact') || null,
+      ethnicity: localStorage.getItem('ethnicity') || null,
+      ethnicity_other: localStorage.getItem('ethnicity_other') || null,
+      englishUnderstanding: localStorage.getItem('englishUnderstanding') || null,
+      englishUnderstanding_other: localStorage.getItem('englishUnderstanding_other') || null,
+      englishAtHome: localStorage.getItem('englishAtHome') || null,
+      englishAtHome_other: localStorage.getItem('englishAtHome_other') || null,
+      q3: localStorage.getItem('q3') || null,
+      safePlace: localStorage.getItem('safePlace') || null,
+      q5: localStorage.getItem('q5') || null,
+      q6: localStorage.getItem('q6') || null,
+      q7: localStorage.getItem('q7') || null,
+      q8: localStorage.getItem('q8') || null,
+      q9: localStorage.getItem('q9') || null,
+      school: localStorage.getItem('school') || null,
+      q10: localStorage.getItem('q10') || null,
+      q11: localStorage.getItem('q11') || null,
+      q12: localStorage.getItem('q12') || null,
+      q13: localStorage.getItem('q13') || null,
+      q14: localStorage.getItem('q14') || null,
+      q15: localStorage.getItem('q15') || null,
+      q16: localStorage.getItem('q16') || null,
+      q17: localStorage.getItem('q17') || null,
+      q18: localStorage.getItem('q18') || null,
+      q19: localStorage.getItem('q19') || null,
+      q20: localStorage.getItem('q20') || null,
+      q20_other: localStorage.getItem('q20_other') || null,
+      q21: localStorage.getItem('q21') || null,
+      q21_other: localStorage.getItem('q21_other') || null,
+      q22: localStorage.getItem('q22') || null,
+      q23: localStorage.getItem('q23') || null,
+      q24: localStorage.getItem('q24') || null,
+      q24_other: localStorage.getItem('q24_other') || null,
+      q25: localStorage.getItem('q25') || null,
+      q26: localStorage.getItem('q26') || null,
+      q27: localStorage.getItem('q27') || null
+    };
+
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      ...initialValues,
+    }));
+  }, []);
+
   const handleNextPage = () => {
     setCurrentPage((prevPage) => prevPage + 1);
   };
 
-  // Function to handle previous page button click
   const handlePreviousPage = () => {
     setCurrentPage((prevPage) => prevPage - 1);
   };
 
-  // Function to handle page changes when the user selects a different page from the pagination component
   const handlePageChange = (event, newPage) => {
     setCurrentPage(newPage);
   };
 
-  // Function to render the current form page based on the currentPage state
   const renderFormPage = () => {
     switch (currentPage) {
       case 1:
@@ -192,7 +307,6 @@ export default function IntakeFormFillable() {
       autoComplete="off"
     >
       <h1>Intake Form</h1>
-      {/* Pagination component */}
       <Pagination
         count={totalFormPages}
         page={currentPage}
@@ -202,29 +316,20 @@ export default function IntakeFormFillable() {
         color="primary"
       />
       <Box>
-
-        {/* Render the current form page */}
         {renderFormPage()}
-
-        {/* Next, Previous, and Submit buttons */}
         <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-          {/* Show "Previous" button if not on the first page */}
           {currentPage > 1 && (
             <Button variant="contained" onClick={handlePreviousPage} sx={{ margin: 5 }}>
               Previous
             </Button>
           )}
-
-          {/* Show "Next" button if not on the last page */}
           {currentPage < totalFormPages && (
             <Button variant="contained" onClick={handleNextPage} sx={{ margin: 5 }}>
               Next
             </Button>
           )}
-
-          {/* Show "Submit" button on the last page */}
           {currentPage === totalFormPages && (
-            <Button variant="contained" onClick={handleSubmit}>
+            <Button variant="contained" onClick={handleSubmit} sx={{ margin: 5 }}>
               Submit
             </Button>
           )}
