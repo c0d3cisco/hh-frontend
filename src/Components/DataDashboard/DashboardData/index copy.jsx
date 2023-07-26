@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { Grid, Paper, Button, TextField, Box, Container } from "@mui/material";
 import { LineChart } from '@mui/x-charts';
-import { subMonths, subWeeks, subDays, format } from 'date-fns';
+import { subMonths, subWeeks, subDays, format, sub } from 'date-fns';
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from 'axios';
 import dayjs from 'dayjs';
@@ -11,21 +11,26 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 // import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker';
 
-
-
 const currentDate = new Date();
 const today = dayjs();
 const yesterday = dayjs().subtract(1, 'day');
 const todayStartOfTheDay = today.startOf('day');
 
-// Generate random data for the chart
-const generateChartData = (numPoints) => {
+// Generate data for the chart
+const generateChartData = async (numPoints, intervalType) => {
+  const validIntervalTypes = ['daily', 'weekly', 'monthly'];
+  if (!validIntervalTypes.includes(intervalType)) {
+    throw new Error('Invalid intervalType. Supported values are "daily", "weekly", or "monthly".');
+  }
+
   const data = [];
   for (let i = 0; i < numPoints; i++) {
-    data.push(Math.floor(Math.random() * 1000));
+    const interval = intervalType === 'daily' ? 'day' : intervalType === 'weekly' ? 'week' : 'month';
+    const date = format(sub(new Date(), { [interval]: numPoints - 1 - i }), 'yyyy-MM-dd');
+    const response = await axios.get(`https://helen-house-backend-v3uq.onrender.com/totalHoursPerWeek?intervalType=${intervalType}&date_start=${date}`);
+    data.push(response.data.totalHours);
   }
   return data;
-
 };
 
 export default function DashboardData() {
@@ -263,7 +268,7 @@ export default function DashboardData() {
 
     console.log('Start Date', startDate);
     console.log('End Date', endDate);
-    
+
   };
 
   useEffect(() => {
@@ -279,7 +284,6 @@ export default function DashboardData() {
 
   }, []); // Add the functions that fetch data from the server to the dependency array
   // }, [getTotalDailyCheckins, getWeeklyAverageCheckIns, getTotalYTDCheckins, getTotalCheckinHours]); // Add the functions that fetch data from the server to the dependency array
-
 
   // State variables for chart data and settings
   const [chartData, setChartData] = React.useState({
@@ -315,68 +319,98 @@ export default function DashboardData() {
   };
 
   // Function to handle the "Days Back" button click
-  const handleDaysBackClick = () => {
+  const handleDaysBackClick = async () => {
     const numDays = parseInt(daysBack, 10);
     if (!isNaN(numDays) && numDays > 0) {
-      const data = {
-        series: [
-          { data: generateChartData(numDays), label: 'Youth Hours' },
-          { data: generateChartData(numDays), label: 'Staff Hours' },
-        ],
-        xAxis: [{ scaleType: 'point', data: generateXAxisLabels(numDays, 'days') }],
-      };
-      // Update the data in the cards
-      setTotalDailyCheckIns(generateTotalDailyCheckIns(data.series[0].data));
-      setWeeklyAvgCheckIns(generateWeeklyAvgCheckIns(data.series[0].data));
-      setYtdCheckIns(generateYtdCheckIns(data.series[0].data));
-      setTotalHours(generateTotalHours(data.series[0].data));
-
-      const newWidth = Math.max(300, numDays * 100); // Adjust the factor (100) as needed
-      setChartData(data);
-      // setChartWidth(newWidth);
-      setSelectedDuration(`${numDays} days`);
-      setDaysBack('');
+      try {
+        const response = await axios.get(`https://helen-house-backend-v3uq.onrender.com/totalHoursPerWeek?intervalType=daily`);
+        const totalHours = response.data.totalHours;
+  
+        // Update the data in the cards
+        setTotalDailyCheckIns(generateTotalDailyCheckIns(totalHours));
+        setWeeklyAvgCheckIns(generateWeeklyAvgCheckIns(totalHours));
+        setYtdCheckIns(generateYtdCheckIns(totalHours));
+        setTotalHours(generateTotalHours(totalHours));
+  
+        const data = {
+          series: [
+            { data: generateChartData(numDays, 'daily'), label: 'Youth Hours' },
+            { data: generateChartData(numDays, 'daily'), label: 'Staff Hours' },
+          ],
+          xAxis: [{ scaleType: 'point', data: generateXAxisLabels(numDays, 'days') }],
+        };
+        setChartData(data);
+  
+        setSelectedDuration(`${numDays} days`);
+        setDaysBack('');
+      } catch (error) {
+        console.log('Error fetching data:', error.message || error);
+      }
     }
   };
 
   // Function to handle the "Weeks Back" button click
-  const handleWeeksBackClick = () => {
+  const handleWeeksBackClick = async () => {
     const numWeeks = parseInt(weeksBack, 10);
     if (!isNaN(numWeeks) && numWeeks > 0) {
-      const data = {
-        series: [
-          { data: generateChartData(numWeeks), label: 'Youth Hours' },
-          { data: generateChartData(numWeeks), label: 'Staff Hours' },
-        ],
-        xAxis: [{ scaleType: 'point', data: generateXAxisLabels(numWeeks, 'weeks') }],
-      };
-      const newWidth = Math.max(300, numWeeks * 100); // Adjust the factor (100) as needed
-      setChartData(data);
-      // setChartWidth(newWidth);
-      setSelectedDuration(`${numWeeks} weeks`);
-      setWeeksBack('');
+      try {
+        const response = await axios.get(`https://helen-house-backend-v3uq.onrender.com/totalHoursPerWeek?intervalType=weekly`);
+        const totalHours = response.data.totalHours;
+  
+        // Update the data in the cards
+        setTotalDailyCheckIns(generateTotalDailyCheckIns(totalHours));
+        setWeeklyAvgCheckIns(generateWeeklyAvgCheckIns(totalHours));
+        setYtdCheckIns(generateYtdCheckIns(totalHours));
+        setTotalHours(generateTotalHours(totalHours));
+  
+        const data = {
+          series: [
+            { data: generateChartData(numWeeks * 7, 'weekly'), label: 'Youth Hours' },
+            { data: generateChartData(numWeeks * 7, 'weekly'), label: 'Staff Hours' },
+          ],
+          xAxis: [{ scaleType: 'point', data: generateXAxisLabels(numWeeks * 7, 'weeks') }],
+        };
+        setChartData(data);
+  
+        setSelectedDuration(`${numWeeks} weeks`);
+        setWeeksBack('');
+      } catch (error) {
+        console.log('Error fetching data:', error.message || error);
+      }
     }
   };
 
   // Function to handle the "Months Back" button click
-  const handleMonthsBackClick = () => {
+  const handleMonthsBackClick = async () => {
     const numMonths = parseInt(monthsBack, 10);
     if (!isNaN(numMonths) && numMonths > 0) {
-      const data = {
-        series: [
-          { data: generateChartData(numMonths), label: 'Youth Hours' },
-          { data: generateChartData(numMonths), label: 'Staff Hours' },
-        ],
-        xAxis: [{ scaleType: 'point', data: generateXAxisLabels(numMonths, 'months') }],
-      };
-      const newWidth = Math.max(300, numMonths * 100); // Adjust the factor (100) as needed
-      setChartData(data);
-      // setChartWidth(newWidth);
-      setSelectedDuration(`${numMonths} months`);
-      setMonthsBack('');
+      try {
+        const response = await axios.get(`https://helen-house-backend-v3uq.onrender.com/totalHoursPerWeek?intervalType=monthly`);
+        const totalHours = response.data.totalHours;
+  
+        // Update the data in the cards
+        setTotalDailyCheckIns(generateTotalDailyCheckIns(totalHours));
+        setWeeklyAvgCheckIns(generateWeeklyAvgCheckIns(totalHours));
+        setYtdCheckIns(generateYtdCheckIns(totalHours));
+        setTotalHours(generateTotalHours(totalHours));
+  
+        const data = {
+          series: [
+            { data: generateChartData(numMonths * 30, 'monthly'), label: 'Youth Hours' },
+            { data: generateChartData(numMonths * 30, 'monthly'), label: 'Staff Hours' },
+          ],
+          xAxis: [{ scaleType: 'point', data: generateXAxisLabels(numMonths * 30, 'months') }],
+        };
+        setChartData(data);
+  
+        setSelectedDuration(`${numMonths} months`);
+        setMonthsBack('');
+      } catch (error) {
+        console.log('Error fetching data:', error.message || error);
+      }
     }
   };
-
+  
   // Function to calculate the total daily check-ins from the data
   const generateTotalDailyCheckIns = (data) => {
     return data.reduce((total, value) => total + value, 0);
@@ -445,16 +479,15 @@ export default function DashboardData() {
           {selectedDuration && <div style={{ textAlign: 'center', marginBottom: 10 }}>{`Showing data for the last ${selectedDuration}`}</div>}
           <Paper sx={{ p: 2, height: "40vw" }}>
             {/* LineChart component */}
-
             <LineChart
-              yAxisLabel="Check-ins"
+              yAxisLabel="Total Check-in Hours"
               xAxisLabel="Dates"
               legend={{
-                directon: "row",
+                direction: "row",
                 position: {
                   vertical: "top",
-                  horizontal: "middle"
-                }
+                  horizontal: "middle",
+                },
               }}
               sx={{
                 '--ChartsLegend-itemWidth': "150px",
@@ -490,38 +523,40 @@ export default function DashboardData() {
 
         {/* Input and button for days */}
         <Grid item xs={4}>
-        <TextField
-          label="Days Back"
-          variant="outlined"
-          value={daysBack}
-          onChange={(e) => setDaysBack(e.target.value)}
-        />
-        <Button variant="outlined" onClick={handleDaysBackClick}>Let's Go</Button>
-      </Grid>
-
-        {/* Input and button for weeks */}
+          <TextField
+            label="Days Back"
+            variant="outlined"
+            value={daysBack}
+            onChange={(e) => setDaysBack(e.target.value)}
+          />
+          <Button variant="outlined" onClick={handleDaysBackClick}>
+            Let's Go
+          </Button>
+        </Grid>
 
         <Grid item xs={4}>
-        <TextField
-          label="Weeks Back"
-          variant="outlined"
-          value={weeksBack}
-          onChange={(e) => setWeeksBack(e.target.value)}
-        />
-        <Button variant="outlined" onClick={handleWeeksBackClick}>Let's Go</Button>
-      </Grid>
+          <TextField
+            label="Weeks Back"
+            variant="outlined"
+            value={weeksBack}
+            onChange={(e) => setWeeksBack(e.target.value)}
+          />
+          <Button variant="outlined" onClick={handleWeeksBackClick}>
+            Let's Go
+          </Button>
+        </Grid>
 
-        {/* Input and button for months */}
         <Grid item xs={4} spacing={2}>
-        <TextField
-          label="Months Back"
-          variant="outlined"
-          value={monthsBack}
-          onChange={(e) => setMonthsBack(e.target.value)}
-        />
-        <Button variant="outlined" onClick={handleMonthsBackClick}>Let's Go</Button>
-      </Grid>
-
+          <TextField
+            label="Months Back"
+            variant="outlined"
+            value={monthsBack}
+            onChange={(e) => setMonthsBack(e.target.value)}
+          />
+          <Button variant="outlined" onClick={handleMonthsBackClick}>
+            Let's Go
+          </Button>
+        </Grid>
       </Grid>
     </LocalizationProvider>
   );

@@ -14,7 +14,7 @@ export default function IntakeFormFillable() {
   const totalFormPages = 5;
   const userId = localStorage.getItem('userId');
   const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
-
+  const [hasCompletedIntake, setHasCompletedIntake] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
 
   const [formData, setFormData] = useState(() => {
@@ -98,8 +98,18 @@ export default function IntakeFormFillable() {
         Authorization: `Bearer ${accessToken}`,
       }
 
-      const response = await axios.post(
-        `https://helen-house-backend-v3uq.onrender.com/api/userData`,
+      // const response = await axios.post(
+      //   `https://helen-house-backend-v3uq.onrender.com/api/userData`,
+      //   {
+      //     userId: userId,
+      //     ...formData
+      //   },
+      //   { headers }
+      // );
+      // console.log('Intake Form Record Created', response);
+
+      const response = await axios.put(
+        `https://helen-house-backend-v3uq.onrender.com/api/userData/${userId}`,
         {
           userId: userId,
           ...formData
