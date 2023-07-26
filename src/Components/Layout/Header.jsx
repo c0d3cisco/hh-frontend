@@ -12,7 +12,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 const pages = [
   { name: 'Home', path: '/' },
   { name: 'Checkin', path: '/checkin' },
-  { name: 'Signup', path: '/signup' },
+  // { name: 'Signup', path: '/signup' },
   { name: 'Data Dashboard', path: '/datadashboard' },
   { name: 'Intake Form', path: '/intakeform' },
 ];
@@ -59,7 +59,7 @@ export default function ResponsiveAppBar() {
   useEffect(() => {
     // Replace this with your actual authentication logic
     // Set the user role based on authentication state
-    const isAdmin = false; // Replace this with the actual admin role check
+    const isAdmin = true; // Replace this with the actual admin role check
     const isStaff = false; // Replace this with the actual staff role check
     const isVolunteer = false; // Replace this with the actual volunteer role check
 

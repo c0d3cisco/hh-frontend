@@ -11,18 +11,18 @@ export default function FormPage2({ formData, handleChange }) {
           <RadioGroup
             aria-labelledby="demo-radio-buttons-group-label"
             defaultValue="none"
-            name="radio-buttons-group"
+            name="q1"
             value={formData.q1}
             onChange={handleChange}
           >
-            <FormControlLabel value="female" control={<Radio />} label="Female" />
-            <FormControlLabel value="genderqueer" control={<Radio />} label="Genderqueer" />
-            <FormControlLabel value="intersex" control={<Radio />} label="Intersex" />
-            <FormControlLabel value="male" control={<Radio />} label="Male" />
-            <FormControlLabel value="transgender" control={<Radio />} label="Transgender" />
-            <FormControlLabel value="transgender male to female (MTF)" control={<Radio />} label="Transgender Male to Female (MTF)" />
-            <FormControlLabel value="transgender female to male (FTM)" control={<Radio />} label="Transgender Female to Male (FTM)" />
-            <FormControlLabel value="other" control={<Radio />} label="Other" />
+            <FormControlLabel value="Female" control={<Radio />} label="Female" />
+            <FormControlLabel value="Genderqueer" control={<Radio />} label="Genderqueer" />
+            <FormControlLabel value="Intersex" control={<Radio />} label="Intersex" />
+            <FormControlLabel value="Male" control={<Radio />} label="Male" />
+            <FormControlLabel value="Transgender" control={<Radio />} label="Transgender" />
+            <FormControlLabel value="Transgender male to female (MTF)" control={<Radio />} label="Transgender Male to Female (MTF)" />
+            <FormControlLabel value="Transgender female to male (FTM)" control={<Radio />} label="Transgender Female to Male (FTM)" />
+            <FormControlLabel value="Use your own words to describe your gender Identity" control={<Radio />} label="Other" />
           </RadioGroup>
         </FormControl>
         <TextField
@@ -31,6 +31,7 @@ export default function FormPage2({ formData, handleChange }) {
           variant="outlined"
           value={formData.q1_other}
           onChange={handleChange}
+          name='q1_other'
         />
 
         <FormControl>
@@ -38,19 +39,19 @@ export default function FormPage2({ formData, handleChange }) {
           <RadioGroup
             aria-labelledby="demo-radio-buttons-group-label"
             defaultValue="none"
-            name="radio-buttons-group"
+            name="q2"
             value={formData.q2}
             onChange={handleChange}
           >
-            <FormControlLabel value="asexual" control={<Radio />} label="Asexual" />
-            <FormControlLabel value="bisexual" control={<Radio />} label="Bisexual" />
-            <FormControlLabel value="gay" control={<Radio />} label="Gay" />
-            <FormControlLabel value="lesbian" control={<Radio />} label="Lesbian" />
-            <FormControlLabel value="pansexual" control={<Radio />} label="Pansexual" />
-            <FormControlLabel value="queer" control={<Radio />} label="Queer" />
-            <FormControlLabel value="questioning" control={<Radio />} label="Questioning" />
-            <FormControlLabel value="straight" control={<Radio />} label="Straight" />
-            <FormControlLabel value="other" control={<Radio />} label="Other" />
+            <FormControlLabel value="Asexual" control={<Radio />} label="Asexual" />
+            <FormControlLabel value="Bisexual" control={<Radio />} label="Bisexual" />
+            <FormControlLabel value="Gay" control={<Radio />} label="Gay" />
+            <FormControlLabel value="Lesbian" control={<Radio />} label="Lesbian" />
+            <FormControlLabel value="Pansexual" control={<Radio />} label="Pansexual" />
+            <FormControlLabel value="Queer" control={<Radio />} label="Queer" />
+            <FormControlLabel value="Questioning" control={<Radio />} label="Questioning" />
+            <FormControlLabel value="Straight" control={<Radio />} label="Straight" />
+            <FormControlLabel value="Use your own words to describe your sexual orientation" control={<Radio />} label="Other" />
             <p>If you don't feel like these options fit, use your own words to describe below:</p>
           </RadioGroup>
         </FormControl>
@@ -60,6 +61,7 @@ export default function FormPage2({ formData, handleChange }) {
           variant="outlined"
           value={formData.sexualOrientationOther}
           onChange={handleChange}
+          name='sexualOrientationOther'
         />
 
         <FormControl>
@@ -67,7 +69,7 @@ export default function FormPage2({ formData, handleChange }) {
           <RadioGroup
             aria-labelledby="demo-radio-buttons-group-label"
             defaultValue="none"
-            name="radio-buttons-group"
+            name="ethnicity"
             value={formData.ethnicity}
             onChange={handleChange}
           >
@@ -93,6 +95,7 @@ export default function FormPage2({ formData, handleChange }) {
           variant="outlined"
           value={formData.ethnicity_other}
           onChange={handleChange}
+          name='ethnicity_other'
         />
 
         <FormControl>
@@ -100,12 +103,12 @@ export default function FormPage2({ formData, handleChange }) {
           <RadioGroup
             aria-labelledby="demo-radio-buttons-group-label"
             defaultValue="none"
-            name="radio-buttons-group"
+            name="englishUnderstanding"
             value={formData.englishUnderstanding}
             onChange={handleChange}
           >
-            <FormControlLabel value="no" control={<Radio />} label="No" />
-            <FormControlLabel value="yes" control={<Radio />} label="Yes" />
+            <FormControlLabel value="No" control={<Radio />} label="No" />
+            <FormControlLabel value="Yes-If yes, which language?" control={<Radio />} label="Yes" />
             <p>If yes, which language?</p>
           </RadioGroup>
         </FormControl>
@@ -115,18 +118,19 @@ export default function FormPage2({ formData, handleChange }) {
           variant="outlined"
           value={formData.englishUnderstanding_other}
           onChange={handleChange}
+          name='englishUnderstanding_other'
         />
         <FormControl>
           <FormLabel id="demo-radio-buttons-group-label">Does your family speak a language at home that is not English?</FormLabel>
           <RadioGroup
             aria-labelledby="demo-radio-buttons-group-label"
             defaultValue="none"
-            name="radio-buttons-group"
+            name="englishAtHome"
             value={formData.englishAtHome}
             onChange={handleChange}
           >
-            <FormControlLabel value="no" control={<Radio />} label="No" />
-            <FormControlLabel value="yes" control={<Radio />} label="Yes" />
+            <FormControlLabel value="No" control={<Radio />} label="No" />
+            <FormControlLabel value="Yes-If yes, which language?" control={<Radio />} label="Yes" />
             <p>If yes, which language?</p>
           </RadioGroup>
         </FormControl>
@@ -136,6 +140,7 @@ export default function FormPage2({ formData, handleChange }) {
           variant="outlined"
           value={formData.englishAtHome_other}
           onChange={handleChange}
+          name='englishAtHome_other'
         />
       </div>
     </Box>
