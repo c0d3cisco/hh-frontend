@@ -18,6 +18,7 @@ const pages = [
 ];
 
 export default function ResponsiveAppBar() {
+  // State variables for handling the menu
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
@@ -26,13 +27,17 @@ export default function ResponsiveAppBar() {
   const location = useLocation();
   const { isAuthenticated } = useAuth0(); // Get the isAuthenticated status from Auth0
 
+  // Open the navigation menu
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
 
+  // Close the navigation menu
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
+
+  // Close the user menu
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
@@ -104,6 +109,7 @@ export default function ResponsiveAppBar() {
             alt="Helen House logo"
             sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}
           />
+          {/* Display the logo as a link */}
           <Typography
             variant="h6"
             noWrap
@@ -181,6 +187,7 @@ export default function ResponsiveAppBar() {
             }}
           >
           </Typography>
+          {/* Display the navigation menu */}
           <Box
             sx={{
               flexGrow: 1,
@@ -189,9 +196,9 @@ export default function ResponsiveAppBar() {
               alignItems: 'center',
             }}
           >
+            {/* Loop through the pages array to show the menu buttons */}
             {pages.map((page) => {
               // Display the button based on user role
-
               if (shouldShowMenuItem(page.name)) {
                 return (
                   <Button
@@ -212,24 +219,16 @@ export default function ResponsiveAppBar() {
               return null; // Hide the button if not allowed for the user role
             })}
 
+            {/* Show the Login/Logout button based on the user role */}
             {userRole === 'guest' ? (
               <Auth0LoginButton />
             ) : (
               <Auth0LogoutButton />
             )}
 
-            {/* {userRole === 'guest' ? (
-              <Button color="inherit" onClick={handleLoginClick}>
-                Login
-              </Button>
-            ) : (
-              <Auth0LogoutButton />
-            )} */}
-
-            {/* <Auth0Profile /> */}
-
           </Box>
           <Box sx={{ flexGrow: 0 }}>
+            {/* Display the user avatar and user menu */}
             <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
             <Menu
               sx={{ mt: '45px' }}
@@ -247,7 +246,8 @@ export default function ResponsiveAppBar() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-
+              {/* The user profile menu */}
+              <Auth0Profile />
             </Menu>
           </Box>
         </Toolbar>
@@ -257,4 +257,3 @@ export default function ResponsiveAppBar() {
     </AppBar>
   );
 }
-

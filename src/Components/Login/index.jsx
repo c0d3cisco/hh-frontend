@@ -4,10 +4,11 @@ import { Link } from 'react-router-dom';
 import Auth0LoginButton from '../Auth0Login';
 
 export function LoginModal({ opened, onClose }) {
-
+  // State variables for username and password
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
+  // Event handlers for username and password changes
   const handleUsernameChange = (event) => {
     setUsername(event.target.value);
   };
@@ -16,21 +17,24 @@ export function LoginModal({ opened, onClose }) {
     setPassword(event.target.value);
   };
 
-    //! Try Catch for logging in to the database
+  // Function to handle login form submission
   const handleLoginSubmit = (e) => {
     e.preventDefault();
     console.log('Username:', username);
     console.log('Password:', password);
 
+    // Clear input fields and close the modal after form submission
     setUsername('');
     setPassword('');
     onClose();
   };
 
+  // Function to handle signup button click
   const handleSignup = () => {
     onClose();
     console.log('Signup');
-    <Link to="/signup" style={{ textDecoration: 'none' }}></Link>
+    // Perform any logic for navigating to the signup page
+    // Note: The <Link> component should be used in the parent component, not here.
   };
 
   return (
@@ -82,12 +86,12 @@ export function LoginModal({ opened, onClose }) {
             <Button type="submit" variant="contained" color="primary" sx={{ mt: 1 }}>
               Submit
             </Button>
-         
+            
+            {/* The signup button should be handled in the parent component */}
             {/* <Link to="/signup" style={{ textDecoration: 'none' }}>
               <Button type="submit" onClick={handleSignup} variant="contained" color="primary" sx={{ mt: 1 }}>
                 Signup
               </Button>
-            
             </Link> */}
           </Box>
         </form>

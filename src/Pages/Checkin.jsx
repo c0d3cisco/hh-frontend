@@ -8,9 +8,11 @@ import axios from 'axios';
 export const Checkin = () => {
   const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
 
+  // Get the user ID from localStorage
   const userId = localStorage.getItem('userId');
   console.log('userId', userId);
 
+  // State variables
   const [isLoading, setIsLoading] = useState(false);
   const [isCheckedIn, setIsCheckedIn] = useState(
     localStorage.getItem('isCheckedIn') === 'true' // Initialize isCheckedIn from localStorage
@@ -22,6 +24,7 @@ export const Checkin = () => {
   // Function to fetch check-ins for the current user
   const fetchCheckins = async () => {
     try {
+      // Get an access token for API requests
       const token = await getAccessTokenSilently({
         authorizationParams: {
           audience: 'https://helen-house-backend-v3uq.onrender.com',
@@ -33,6 +36,7 @@ export const Checkin = () => {
         Authorization: `Bearer ${token}`,
       };
 
+      // Make a GET request to fetch check-in data for the current user
       const checkinsResponse = await axios.get(`https://helen-house-backend-v3uq.onrender.com/api/checkinData/${userId}`, { headers });
       const checkins = checkinsResponse.data;
       console.log('Checkins', checkins);
@@ -52,10 +56,12 @@ export const Checkin = () => {
     }
   };
 
+  // Function to handle check-in when the user clicks the "Check-In" button
   const handleCheckIn = async () => {
     setIsLoading(true);
 
     try {
+      // Get an access token for API requests
       const token = await getAccessTokenSilently({
         authorizationParams: {
           audience: 'https://helen-house-backend-v3uq.onrender.com',
@@ -67,6 +73,7 @@ export const Checkin = () => {
         Authorization: `Bearer ${token}`,
       };
 
+      // Make a POST request to create a new check-in record
       let response = await axios.post(
         'https://helen-house-backend-v3uq.onrender.com/api/checkin',
         {
@@ -80,9 +87,11 @@ export const Checkin = () => {
       console.log('User', user);
       console.log('CheckIn Record Created', response);
 
+      // Update state with the check-in timestamp and set isCheckedIn to true
       setCheckInTimestamp(response.data.timeIn);
       setIsCheckedIn(true);
 
+      // Set a timeout to simulate loading and update isLoading state
       setTimeout(() => {
         setIsLoading(false);
       }, 2000);
@@ -93,10 +102,12 @@ export const Checkin = () => {
     }
   };
 
+  // Function to handle check-out when the user clicks the "Checkout" button
   const handleCheckOut = async () => {
     setIsLoading(true);
 
     try {
+      // Get an access token for API requests
       const token = await getAccessTokenSilently({
         authorizationParams: {
           audience: 'https://helen-house-backend-v3uq.onrender.com',
@@ -144,6 +155,7 @@ export const Checkin = () => {
         setIsCheckedIn(false);
       }
 
+      // Set a timeout to simulate loading and update isLoading state
       setTimeout(() => {
         setIsLoading(false);
       }, 2000);
@@ -154,27 +166,30 @@ export const Checkin = () => {
     }
   };
 
+  // Fetch check-ins and set isCheckedIn state when the component mounts
   useEffect(() => {
-    // Read the isCheckedIn value from localStorage when the component mounts
     const isCheckedInValue = localStorage.getItem('isCheckedIn') === 'true';
     setIsCheckedIn(isCheckedInValue);
-    // Fetch the check-ins when the component mounts to show the most recent check-in on load
     fetchCheckins();
   }, []);
 
-  // Update the isCheckedIn state and save to localStorage when the component unmounts
+  // Update isCheckedIn state and save to localStorage when the component unmounts
   useEffect(() => {
     return () => {
       localStorage.setItem('isCheckedIn', isCheckedIn);
     };
   }, [isCheckedIn]);
 
+  // Log the checked-in or checked-out timestamp when isCheckedIn or checkOutTimestamp changes
   useEffect(() => {
     if (isCheckedIn) {
-      console.log('Checked out');
+      console.log('Checked in at: ', checkInTimestamp);
+    } else if (!isCheckedIn) {
+      console.log('Checked out at: ', checkOutTimestamp);
     }
-  }, [isCheckedIn]);
+  }, [isCheckedIn, checkOutTimestamp]);
 
+  // Define the content based on the isLoading state
   let checkInStatusContent;
   if (isLoading) {
     checkInStatusContent = (
@@ -190,7 +205,7 @@ export const Checkin = () => {
       <Box sx={{}}>
         <Button
           variant="contained"
-          onClick={isCheckedIn ? handleCheckOut : handleCheckIn}
+          onClick={isCheckedIn ? handleCheckOut : handleCheckIn} // Call handleCheckOut if isCheckedIn is true, otherwise call handleCheckIn
           sx={{
             marginTop: 5,
             marginBottom: 2,
@@ -204,14 +219,6 @@ export const Checkin = () => {
       </Box>
     );
   }
-
-  useEffect(() => {
-    if (isCheckedIn) {
-      console.log('Checked in at: ', checkInTimestamp);
-    } else if (!isCheckedIn) {
-      console.log('Checked out at: ', checkOutTimestamp);
-    }
-  }, [isCheckedIn, checkOutTimestamp]);
 
   return (
     <Box
@@ -236,6 +243,7 @@ export const Checkin = () => {
         </Typography>
         <MoodSlider rating={moodRating} onRatingChange={setMoodRating} />
 
+        {/* Render the check-in status content */}
         {isLoading ? (
           <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <CircularProgress color="primary" />
@@ -249,11 +257,14 @@ export const Checkin = () => {
           </Box>
         )}
 
+        {/* Show the check-in timestamp if the user is checked in */}
         {isCheckedIn && checkInTimestamp && (
           <Typography variant="body1" sx={{ fontSize: 18, marginTop: 2 }}>
             Checked in at: {new Date(checkInTimestamp).toLocaleString()}
           </Typography>
         )}
+
+        {/* Show the check-out timestamp if available */}
         {checkOutTimestamp && (
           <Typography variant="body1" sx={{ fontSize: 18, marginTop: 2 }}>
             Checked out at: {new Date(checkOutTimestamp).toLocaleString()}
