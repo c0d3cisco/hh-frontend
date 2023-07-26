@@ -9,6 +9,7 @@ import FormPage2 from './FormPage2';
 import FormPage3 from './FormPage3';
 import FormPage4 from './FormPage4';
 import FormPage5 from './FormPage5';
+import { useNavigate } from 'react-router-dom';
 
 export default function IntakeFormFillable() {
   const totalFormPages = 5;
@@ -16,6 +17,7 @@ export default function IntakeFormFillable() {
   const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
   const [hasCompletedIntake, setHasCompletedIntake] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState(() => {
     const storedFormData = localStorage.getItem('formData');
@@ -179,8 +181,8 @@ export default function IntakeFormFillable() {
         q27: null
       });
 
-      // Refresh the page after successful submission
-      window.location.reload();
+      // navigate home after submission
+      navigate('/');
 
       // Redirect or show a success message if needed
     } catch (error) {
