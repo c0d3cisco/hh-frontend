@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import {AppBar, Box, Toolbar, IconButton, Typography, Container, Avatar, Button, MenuItem, Menu,} from '@mui/material';
+import { AppBar, Box, Toolbar, IconButton, Typography, Container, Avatar, Button, MenuItem, Menu, } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import HHLogo from '../../assets/updated_helen_house_logo_cropped_360.png';
-import { LoginModal } from '../Login'; // Import the ModalLogin component
+// import { LoginModal } from '../Login'; // Import the ModalLogin component
 import Auth0LoginButton from '../Auth0Login';
 import Auth0LogoutButton from '../Auth0Logout';
 import Auth0Profile from '../Auth0Profile';
@@ -12,7 +12,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 const pages = [
   { name: 'Home', path: '/' },
   { name: 'Checkin', path: '/checkin' },
-  { name: 'Signup', path: '/signup' },
+  // { name: 'Signup', path: '/signup' },
   { name: 'Data Dashboard', path: '/datadashboard' },
   { name: 'Intake Form', path: '/intakeform' },
 ];
@@ -29,9 +29,7 @@ export default function ResponsiveAppBar() {
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
-  const handleOpenUserMenu = (event) => {
-    setAnchorElUser(event.currentTarget);
-  };
+
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
@@ -39,23 +37,33 @@ export default function ResponsiveAppBar() {
     setAnchorElUser(null);
   };
 
-  const handleLoginClick = () => {
-    setIsLoginModalOpen(true); // Open the login modal
-  };
+  // Helper function to check if a menu item should be shown based on the user's role
+  const shouldShowMenuItem = (pageName) => {
+    if (
+      (userRole === 'guest' && pageName === 'Home') ||
+      //TODO Update User Logic to only see Intake Form if not "approved"
+      // (userRole === 'user' && ['Home', 'Checkin', 'Intake Form'].includes(pageName)) ||
+      //!! replace
+      (userRole === 'user') ||
 
-  const handleLoginModalClose = () => {
-    setIsLoginModalOpen(false); // Close the login modal
+      (userRole === 'admin') || // Include all pages for admins
+      (userRole === 'staff' && pageName !== 'Data Dashboard') ||
+      (userRole === 'volunteer' && ['Home', 'Checkin', 'Logout'].includes(pageName))
+    ) {
+      return true;
+    }
+    return false;
   };
 
   //! Replace with getting user role from the user table
   useEffect(() => {
     // Replace this with your actual authentication logic
     // Set the user role based on authentication state
-    const isAdmin = false; // Replace this with the actual admin role check
+    const isAdmin = true; // Replace this with the actual admin role check
     const isStaff = false; // Replace this with the actual staff role check
     const isVolunteer = false; // Replace this with the actual volunteer role check
 
-    console.log('User is authenticated', isAuthenticated)
+    // console.log('User is authenticated', isAuthenticated)
     if (isAuthenticated) {
       if (isAdmin) {
         setUserRole('admin');
@@ -111,8 +119,9 @@ export default function ResponsiveAppBar() {
               textDecoration: 'none',
             }}
           >
-            {/* Add your website name here */}
           </Typography>
+
+          {/* Condensed view for mobile */}
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
@@ -142,10 +151,15 @@ export default function ResponsiveAppBar() {
                 display: { xs: 'block', md: 'none' },
               }}
             >
+              {/* Loop through the pages array to show the menu items */}
               {pages.map((page) => (
-                <MenuItem key={page.name} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page.name}</Typography>
-                </MenuItem>
+                shouldShowMenuItem(page.name) && (
+                  <MenuItem key={page.name} onClick={handleCloseNavMenu}>
+                    <Link to={page.path} style={{ textDecoration: 'none', color: 'inherit' }}>
+                      <Typography textAlign="center">{page.name}</Typography>
+                    </Link>
+                  </MenuItem>
+                )
               ))}
             </Menu>
           </Box>
@@ -166,7 +180,6 @@ export default function ResponsiveAppBar() {
               textDecoration: 'none',
             }}
           >
-            {/* Add your website name here */}
           </Typography>
           <Box
             sx={{
@@ -178,14 +191,8 @@ export default function ResponsiveAppBar() {
           >
             {pages.map((page) => {
               // Display the button based on user role
-              if (
-                (userRole === 'guest' && page.name === 'Home') ||
-                //TODO Update User Logic to only see Intake Form if not "approved"
-                (userRole === 'user' && ['Home', 'Checkin', 'Intake Form'].includes(page.name)) ||
-                (userRole === 'admin') || // Include all pages for admins
-                (userRole === 'staff' && page.name !== 'Data Dashboard') ||
-                (userRole === 'volunteer' && ['Home', 'Checkin', 'Logout'].includes(page.name))
-              ) {
+
+              if (shouldShowMenuItem(page.name)) {
                 return (
                   <Button
                     component={Link}
@@ -212,11 +219,11 @@ export default function ResponsiveAppBar() {
             )}
 
             {/* {userRole === 'guest' ? (
-              <Button color="inherit" onClick={loginWithRedirect()}>
+              <Button color="inherit" onClick={handleLoginClick}>
                 Login
               </Button>
             ) : (
-              <Button color="inherit" onClick={logout({ logoutParams: { returnTo: window.location.origin } })}>Logout</Button>
+              <Auth0LogoutButton />
             )} */}
 
             {/* <Auth0Profile /> */}
@@ -246,7 +253,7 @@ export default function ResponsiveAppBar() {
         </Toolbar>
       </Container>
       {/* Login Modal */}
-      <LoginModal opened={isLoginModalOpen} onClose={handleLoginModalClose} />
+      {/* <LoginModal opened={isLoginModalOpen} onClose={handleLoginModalClose} /> */}
     </AppBar>
   );
 }

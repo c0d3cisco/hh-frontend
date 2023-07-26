@@ -5,72 +5,213 @@ import MoodSlider from '../Components/Checkin/MoodSlider';
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from 'axios';
 
-
-
 export const Checkin = () => {
-  const { user, isAuthenticated, getAccessTokenSilently } = useAuth0(); // Get the isAuthenticated status from Auth0
+  const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
+
+  const userId = localStorage.getItem('userId');
+  console.log('userId', userId);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [isCheckedIn, setIsCheckedIn] = useState(false);
+  const [isCheckedIn, setIsCheckedIn] = useState(
+    localStorage.getItem('isCheckedIn') === 'true' // Initialize isCheckedIn from localStorage
+  );
   const [moodRating, setMoodRating] = useState(3);
   const [checkInTimestamp, setCheckInTimestamp] = useState(null);
+  const [checkOutTimestamp, setCheckOutTimestamp] = useState(null);
 
-
-  const handleCheckIn = async () => {
-    setIsLoading(true);
-  
+  // Function to fetch check-ins for the current user
+  const fetchCheckins = async () => {
     try {
-
       const token = await getAccessTokenSilently({
         authorizationParams: {
           audience: 'https://helen-house-backend-v3uq.onrender.com',
           scope: "read:current_user",
         },
       });
-  
+
       const headers = {
         Authorization: `Bearer ${token}`,
+      };
+
+      const checkinsResponse = await axios.get(`https://helen-house-backend-v3uq.onrender.com/api/checkinData/${userId}`, { headers });
+      const checkins = checkinsResponse.data;
+      console.log('Checkins', checkins);
+
+      // Check if the user has any open check-ins
+      const openCheckin = checkins.find(checkin => !checkin.timeOut);
+
+      // Set the check-in timestamp if the user is checked in
+      if (openCheckin) {
+        setCheckInTimestamp(openCheckin.timeIn);
+      } else {
+        setCheckInTimestamp(null);
       }
-      console.log('Bearer Access Token', headers);
-  
-      const response = await axios.post(
+
+    } catch (error) {
+      console.log('Error fetching check-ins:', error.message);
+    }
+  };
+
+  const handleCheckIn = async () => {
+    setIsLoading(true);
+
+    try {
+      const token = await getAccessTokenSilently({
+        authorizationParams: {
+          audience: 'https://helen-house-backend-v3uq.onrender.com',
+          scope: "read:current_user",
+        },
+      });
+
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
+
+      let response = await axios.post(
         'https://helen-house-backend-v3uq.onrender.com/api/checkin',
         {
-          "timeIn": "2023-06-13T22:06:09.649Z",
-          "timeOut": "2023-06-13T22:07:09.649Z",
-          "moodIn": "1",
-          "moodOut": "5",
-          "userId": 5,
-          // username: user.name,
-          // moodRating: moodRating,
-          // checkInTimestamp: checkInTimestamp,
+          timeIn: new Date().toISOString(),
+          moodIn: moodRating,
+          userId: userId,
         },
         { headers }
       );
 
-      console.log('Checkin Record Created', response);
-  
+      console.log('User', user);
+      console.log('CheckIn Record Created', response);
+
+      setCheckInTimestamp(response.data.timeIn);
+      setIsCheckedIn(true);
+
       setTimeout(() => {
         setIsLoading(false);
-        setIsCheckedIn(true);
-
-        setCheckInTimestamp(Date.now()); // Store the current timestamp
-      }, 3000);
+      }, 2000);
     } catch (error) {
       console.log('Error message:', error.message);
       console.log('Error response:', error.response);
-
+      setIsLoading(false);
     }
   };
-  
+
+  const handleCheckOut = async () => {
+    setIsLoading(true);
+
+    try {
+      const token = await getAccessTokenSilently({
+        authorizationParams: {
+          audience: 'https://helen-house-backend-v3uq.onrender.com',
+          scope: "read:current_user",
+        },
+      });
+
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
+
+      // Fetch the check-ins for the current user
+      const checkinsResponse = await axios.get(`https://helen-house-backend-v3uq.onrender.com/api/checkinData/${userId}`, { headers });
+      const checkins = checkinsResponse.data;
+
+      // Find the closest check-in timestamp to the current time
+      let currentTime = Date.now();
+      let closestCheckIn = null;
+      let closestTimeDiff = Infinity;
+
+      checkins.forEach(checkin => {
+        const checkinTimestamp = new Date(checkin.timeIn).getTime();
+        const timeDiff = Math.abs(checkinTimestamp - currentTime);
+
+        if (timeDiff < closestTimeDiff) {
+          closestTimeDiff = timeDiff;
+          closestCheckIn = checkin;
+        }
+      });
+
+      // Update the check-in record with the closest check-in ID
+      if (closestCheckIn) {
+        console.log('Closest Checkin Id', closestCheckIn.id)
+        const response = await axios.put(
+          `https://helen-house-backend-v3uq.onrender.com/checkinUpdate/${closestCheckIn.id}`,
+          {
+            timeOut: new Date().toISOString(),
+            moodOut: moodRating,
+          },
+          { headers }
+        );
+
+        console.log('CheckOut Record Updated', response);
+        setCheckOutTimestamp(response.data.timeOut);
+        setIsCheckedIn(false);
+      }
+
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 2000);
+    } catch (error) {
+      console.log('Error message:', error.message);
+      console.log('Error response:', error.response);
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    // Read the isCheckedIn value from localStorage when the component mounts
+    const isCheckedInValue = localStorage.getItem('isCheckedIn') === 'true';
+    setIsCheckedIn(isCheckedInValue);
+    // Fetch the check-ins when the component mounts to show the most recent check-in on load
+    fetchCheckins();
+  }, []);
+
+  // Update the isCheckedIn state and save to localStorage when the component unmounts
+  useEffect(() => {
+    return () => {
+      localStorage.setItem('isCheckedIn', isCheckedIn);
+    };
+  }, [isCheckedIn]);
 
   useEffect(() => {
     if (isCheckedIn) {
-      //! Need to add update checkout timestamp in the Checkin database Table
-      // Perform any checkout-related logic here
       console.log('Checked out');
     }
   }, [isCheckedIn]);
+
+  let checkInStatusContent;
+  if (isLoading) {
+    checkInStatusContent = (
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <CircularProgress color="primary" />
+        <Typography variant="body1" sx={{ fontSize: 18, marginTop: 2 }}>
+          Loading...
+        </Typography>
+      </Box>
+    );
+  } else {
+    checkInStatusContent = (
+      <Box sx={{}}>
+        <Button
+          variant="contained"
+          onClick={isCheckedIn ? handleCheckOut : handleCheckIn}
+          sx={{
+            marginTop: 5,
+            marginBottom: 2,
+            height: 50,
+            width: 200,
+            borderRadius: 10,
+          }}
+        >
+          {isCheckedIn ? 'Checkout' : 'Check-In'}
+        </Button>
+      </Box>
+    );
+  }
+
+  useEffect(() => {
+    if (isCheckedIn) {
+      console.log('Checked in at: ', checkInTimestamp);
+    } else if (!isCheckedIn) {
+      console.log('Checked out at: ', checkOutTimestamp);
+    }
+  }, [isCheckedIn, checkOutTimestamp]);
 
   return (
     <Box
@@ -90,7 +231,6 @@ export const Checkin = () => {
         </Typography>
         <img src={logo} alt="Logo" />
 
-        {/* MoodSlider component */}
         <Typography variant="body1" sx={{ fontSize: 16, marginBottom: 2 }}>
           How are you feeling today?
         </Typography>
@@ -105,75 +245,21 @@ export const Checkin = () => {
           </Box>
         ) : (
           <Box sx={{}}>
-            <Button
-              variant="contained"
-              onClick={handleCheckIn}
-              sx={{
-                marginTop: 5,
-                marginBottom: 2,
-                height: 50,
-                width: 200,
-                borderRadius: 10,
-              }}
-            >
-              {isCheckedIn ? 'Checkout' : 'Check-In'}
-            </Button>
+            {checkInStatusContent}
           </Box>
         )}
 
-        {/* Display timestamp if the user has checked in */}
         {isCheckedIn && checkInTimestamp && (
           <Typography variant="body1" sx={{ fontSize: 18, marginTop: 2 }}>
             Checked in at: {new Date(checkInTimestamp).toLocaleString()}
+          </Typography>
+        )}
+        {checkOutTimestamp && (
+          <Typography variant="body1" sx={{ fontSize: 18, marginTop: 2 }}>
+            Checked out at: {new Date(checkOutTimestamp).toLocaleString()}
           </Typography>
         )}
       </Paper>
     </Box>
   );
 };
-
-
-
-
-
- // {
-
-    // ! Bring Back
-    // Get the access token using the useAuth0 hook
-    // const accessToken = await getAccessTokenSilently({
-    //   authorizationParams: {
-    //     "client_id": "IHAQfPbTBLKqyCKcXlMC2la3MDlVRt9Y",
-    //     "client_secret": "uUrj8KtKMZZYtgbCt-T3VpUUvndB8X_gBqSd5oR0nROGgpxss7T-SaWRJBeXBakU",
-    //     "audience": "https://helen-house-backend-v3uq.onrender.com",
-    //     "grant_type": "client_credentials"
-    //   }
-    // });
-
-    // const headers = {
-    //   Authorization: `Bearer ${accessToken}`,
-    // };
-    // console.log('Bearer Access Token', headers);
-
-    //   const response = await axios.post('https://helen-house-backend-v3uq.onrender.com/api/checkin', {
-    //     "timeIn": "2023-06-13T22:06:09.649Z",
-    //     "timeOut": "2023-06-13T22:07:09.649Z",
-    //     "moodIn": "1",
-    //     "moodOut": "5",
-    //     "userId": 1
-    //     // username: user.name,
-    //     // moodRating: moodRating,
-    //     // checkInTimestamp: checkInTimestamp,
-    //   },
-    //     { headers });
-    //   console.log('Checkin Record Created', response);
-
-    //   setTimeout(() => {
-    //     setIsLoading(false);
-    //     setIsCheckedIn(true);
-    //     // setCheckInTimestamp(Date.now()); // Store the current timestamp
-    //   }, 3000);
-    // } catch (error) {
-    //   console.log(user);
-    //   console.log(error.message);
-    // }
-

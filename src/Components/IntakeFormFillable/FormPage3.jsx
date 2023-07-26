@@ -18,6 +18,7 @@ export default function FormPage3({ formData, handleChange }) {
           value={formData.q3}
           onChange={handleChange}
           fullWidth
+          name='q3'
           sx={{ width: 5000 }}
         />
 
@@ -28,12 +29,12 @@ export default function FormPage3({ formData, handleChange }) {
           <RadioGroup
             aria-labelledby="demo-radio-buttons-group-label"
             defaultValue=""
-            name="radio-buttons-group"
-            value={formData.safePlaceToLive}
+            name="safePlace"
+            value={formData.safePlace}
             onChange={handleChange}
           >
-            <FormControlLabel value="yes" control={<Radio />} label="Yes" />
-            <FormControlLabel value="no" control={<Radio />} label="No" />
+            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+            <FormControlLabel value="No" control={<Radio />} label="No" />
           </RadioGroup>
         </FormControl>
 
@@ -43,12 +44,12 @@ export default function FormPage3({ formData, handleChange }) {
           <RadioGroup
             aria-labelledby="demo-radio-buttons-group-label"
             defaultValue=""
-            name="radio-buttons-group"
+            name="q5"
             value={formData.q5}
             onChange={handleChange}
           >
-            <FormControlLabel value="yes" control={<Radio />} label="Yes" />
-            <FormControlLabel value="no" control={<Radio />} label="No" />
+            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+            <FormControlLabel value="No" control={<Radio />} label="No" />
           </RadioGroup>
         </FormControl>
 
@@ -57,12 +58,12 @@ export default function FormPage3({ formData, handleChange }) {
           <RadioGroup
             aria-labelledby="demo-radio-buttons-group-label"
             defaultValue=""
-            name="radio-buttons-group"
+            name="q6"
             value={formData.q6}
             onChange={handleChange}
           >
-            <FormControlLabel value="yes" control={<Radio />} label="Yes" />
-            <FormControlLabel value="no" control={<Radio />} label="No" />
+            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+            <FormControlLabel value="No" control={<Radio />} label="No" />
           </RadioGroup>
         </FormControl>
 
@@ -71,12 +72,12 @@ export default function FormPage3({ formData, handleChange }) {
           <RadioGroup
             aria-labelledby="demo-radio-buttons-group-label"
             defaultValue=""
-            name="radio-buttons-group"
+            name="q7"
             value={formData.q7}
             onChange={handleChange}
           >
-            <FormControlLabel value="yes" control={<Radio />} label="Yes" />
-            <FormControlLabel value="no" control={<Radio />} label="No" />
+            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+            <FormControlLabel value="No" control={<Radio />} label="No" />
           </RadioGroup>
         </FormControl>
 
@@ -85,12 +86,12 @@ export default function FormPage3({ formData, handleChange }) {
           <RadioGroup
             aria-labelledby="demo-radio-buttons-group-label"
             defaultValue=""
-            name="radio-buttons-group"
+            name="q8"
             value={formData.q8}
             onChange={handleChange}
           >
-            <FormControlLabel value="yes" control={<Radio />} label="Yes" />
-            <FormControlLabel value="no" control={<Radio />} label="No" />
+            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+            <FormControlLabel value="No" control={<Radio />} label="No" />
           </RadioGroup>
         </FormControl>
 
@@ -99,12 +100,12 @@ export default function FormPage3({ formData, handleChange }) {
           <RadioGroup
             aria-labelledby="demo-radio-buttons-group-label"
             defaultValue=""
-            name="radio-buttons-group"
+            name="q9"
             value={formData.q9}
             onChange={handleChange}
           >
-            <FormControlLabel value="yes" control={<Radio />} label="Yes" />
-            <FormControlLabel value="no" control={<Radio />} label="No" />
+            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+            <FormControlLabel value="No" control={<Radio />} label="No" />
             <p>If yes, which school?</p>
           </RadioGroup>
         </FormControl>
@@ -114,18 +115,19 @@ export default function FormPage3({ formData, handleChange }) {
           variant="outlined"
           value={formData.school}
           onChange={handleChange}
+          name='school'
         />
         <FormControl>
           <FormLabel id="demo-radio-buttons-group-label">Now or in the past, have you or people close to you experienced stress due to citizenship status?</FormLabel>
           <RadioGroup
             aria-labelledby="demo-radio-buttons-group-label"
             defaultValue=""
-            name="radio-buttons-group"
+            name="q10"
             value={formData.q10}
             onChange={handleChange}
           >
-            <FormControlLabel value="yes" control={<Radio />} label="Yes" />
-            <FormControlLabel value="no" control={<Radio />} label="No" />
+            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+            <FormControlLabel value="No" control={<Radio />} label="No" />
           </RadioGroup>
         </FormControl>
 
@@ -134,12 +136,12 @@ export default function FormPage3({ formData, handleChange }) {
           <RadioGroup
             aria-labelledby="demo-radio-buttons-group-label"
             defaultValue=""
-            name="radio-buttons-group"
+            name="q11"
             value={formData.q11}
             onChange={handleChange}
           >
-            <FormControlLabel value="yes" control={<Radio />} label="Yes" />
-            <FormControlLabel value="no" control={<Radio />} label="No" />
+            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+            <FormControlLabel value="No" control={<Radio />} label="No" />
           </RadioGroup>
         </FormControl>
 
@@ -148,12 +150,12 @@ export default function FormPage3({ formData, handleChange }) {
           <RadioGroup
             aria-labelledby="demo-radio-buttons-group-label"
             defaultValue=""
-            name="radio-buttons-group"
+            name="q12"
             value={formData.q12}
             onChange={handleChange}
           >
-            <FormControlLabel value="yes" control={<Radio />} label="Yes" />
-            <FormControlLabel value="no" control={<Radio />} label="No" />
+            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+            <FormControlLabel value="No" control={<Radio />} label="No" />
           </RadioGroup>
         </FormControl>
 
@@ -162,12 +164,12 @@ export default function FormPage3({ formData, handleChange }) {
           <RadioGroup
             aria-labelledby="demo-radio-buttons-group-label"
             defaultValue=""
-            name="radio-buttons-group"
+            name="q13"
             value={formData.q13}
             onChange={handleChange}
           >
-            <FormControlLabel value="yes" control={<Radio />} label="Yes" />
-            <FormControlLabel value="no" control={<Radio />} label="No" />
+            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+            <FormControlLabel value="No" control={<Radio />} label="No" />
           </RadioGroup>
         </FormControl>
 
@@ -177,12 +179,12 @@ export default function FormPage3({ formData, handleChange }) {
           <RadioGroup
             aria-labelledby="demo-radio-buttons-group-label"
             defaultValue=""
-            name="radio-buttons-group"
+            name="q14"
             value={formData.q14}
             onChange={handleChange}
           >
-            <FormControlLabel value="yes" control={<Radio />} label="Yes" />
-            <FormControlLabel value="no" control={<Radio />} label="No" />
+            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+            <FormControlLabel value="No" control={<Radio />} label="No" />
           </RadioGroup>
         </FormControl>
 
@@ -191,12 +193,12 @@ export default function FormPage3({ formData, handleChange }) {
           <RadioGroup
             aria-labelledby="demo-radio-buttons-group-label"
             defaultValue=""
-            name="radio-buttons-group"
+            name="q15"
             value={formData.q15}
             onChange={handleChange}
           >
-            <FormControlLabel value="yes" control={<Radio />} label="Yes" />
-            <FormControlLabel value="no" control={<Radio />} label="No" />
+            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+            <FormControlLabel value="No" control={<Radio />} label="No" />
           </RadioGroup>
         </FormControl>
 
@@ -205,13 +207,13 @@ export default function FormPage3({ formData, handleChange }) {
           <RadioGroup
             aria-labelledby="demo-radio-buttons-group-label"
             defaultValue=""
-            name="radio-buttons-group"
+            name="q16"
             value={formData.q16}
             onChange={handleChange}
 
           >
-            <FormControlLabel value="yes" control={<Radio />} label="Yes" />
-            <FormControlLabel value="no" control={<Radio />} label="No" />
+            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+            <FormControlLabel value="No" control={<Radio />} label="No" />
           </RadioGroup>
         </FormControl>
 
@@ -220,12 +222,12 @@ export default function FormPage3({ formData, handleChange }) {
           <RadioGroup
             aria-labelledby="demo-radio-buttons-group-label"
             defaultValue=""
-            name="radio-buttons-group"
+            name="q17"
             value={formData.q17}
             onChange={handleChange}
           >
-            <FormControlLabel value="yes" control={<Radio />} label="Yes" />
-            <FormControlLabel value="no" control={<Radio />} label="No" />
+            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+            <FormControlLabel value="No" control={<Radio />} label="No" />
           </RadioGroup>
         </FormControl>
 
@@ -234,12 +236,12 @@ export default function FormPage3({ formData, handleChange }) {
           <RadioGroup
             aria-labelledby="demo-radio-buttons-group-label"
             defaultValue=""
-            name="radio-buttons-group"
+            name="q18"
             value={formData.q18}
             onChange={handleChange}
           >
-            <FormControlLabel value="yes" control={<Radio />} label="Yes" />
-            <FormControlLabel value="no" control={<Radio />} label="No" />
+            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+            <FormControlLabel value="No" control={<Radio />} label="No" />
           </RadioGroup>
         </FormControl>
 
@@ -248,12 +250,12 @@ export default function FormPage3({ formData, handleChange }) {
           <RadioGroup
             aria-labelledby="demo-radio-buttons-group-label"
             defaultValue=""
-            name="radio-buttons-group"
+            name="q19"
             value={formData.q19}
             onChange={handleChange}
           >
-            <FormControlLabel value="yes" control={<Radio />} label="Yes" />
-            <FormControlLabel value="no" control={<Radio />} label="No" />
+            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+            <FormControlLabel value="No" control={<Radio />} label="No" />
           </RadioGroup>
         </FormControl>
       </div>

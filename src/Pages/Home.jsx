@@ -26,14 +26,14 @@ const Home = () => {
         Welcome to Helen House
       </Typography>
 
-       <Button
+       {/* <Button
         variant="contained"
         sx={{ marginTop: 5, marginBottom: 5, backgroundColor: '#a37ccf', color: 'white', fontWeight: 'bold' }}
         onClick={handleGetCall} // Add the click handler for the button>
         >      
         Get Call
-      </Button>
-      <img src={logo} alt="Helen House Logo" className='logo' style={{ width: '15%', maxWidth: '400px', }} sx={{marginBottom:20}} />
+      </Button> */}
+      <img src={logo} alt="Helen House Logo" className='logo' style={{ width: '20%', maxWidth: '400px', }} sx={{marginBottom:20}} />
       <RandomQuote sx={{marginTop:10}}/>
     </div>
   );

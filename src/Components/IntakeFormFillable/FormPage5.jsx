@@ -16,6 +16,7 @@ export default function FormPage5({ formData, handleChange }) {
             defaultValue=""
             value={formData.q25}
             onChange={handleChange}
+            name='q25'
           />
 
 
@@ -27,8 +28,9 @@ export default function FormPage5({ formData, handleChange }) {
             multiline
             rows={4}
             defaultValue=""
-            value={formData.activitiesYouWantToSee}
+            value={formData.q26}
             onChange={handleChange}
+            name='q26'
           />
           <p>Lastly, we would love to know why Helen House is important to you?</p>
           <TextField
@@ -37,8 +39,9 @@ export default function FormPage5({ formData, handleChange }) {
             multiline
             rows={4}
             defaultValue=""
-            value={formData.whyHelenHouseIsImportant}
+            value={formData.q27}
             onChange={handleChange}
+            name='q27'
           />
         </div>
       </div>

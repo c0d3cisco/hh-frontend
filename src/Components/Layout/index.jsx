@@ -8,10 +8,10 @@ export default function Layout({ children }) {
   const { isLoading } = useAuth0();
   useEffect(() => {
     if (isLoading) {
-      console.log('Auth0 is loaded', isLoading);
+      // console.log('Auth0 is loaded', isLoading);
     }
     else{
-      console.log('Auth0 is logged out', isLoading);
+      // console.log('Auth0 is logged out', isLoading);
     }
   }, [isLoading]);
 

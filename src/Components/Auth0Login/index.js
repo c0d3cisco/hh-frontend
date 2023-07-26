@@ -1,9 +1,65 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { Button } from "@mui/material";
+import axios from "axios";
 
 const Auth0LoginButton = () => {
-  const { loginWithRedirect } = useAuth0();
+  const { user, loginWithRedirect } = useAuth0();
+
+  useEffect(() => {
+
+    const userCreate = {
+      "username": user?.sub,
+      "password": "void"
+    }
+
+    const handleSignUp = async () => {
+      try {
+        // console.log(user)
+        // console.log(userCreate)
+        const response = await axios.post('https://helen-house-backend-v3uq.onrender.com/signup', userCreate)
+        // console.log(response.data.user.id)
+        localStorage.setItem('userId', response.data.id);
+      } catch (error) {
+        console.log("User signed up already", error);
+        try{
+          const response = await axios.post('https://helen-house-backend-v3uq.onrender.com/checkUser', userCreate)
+          // console.log(response.data[0].id)
+          localStorage.setItem('userId', response.data[0].id);
+          }catch(error){
+            console.log(error)
+          }
+      }
+      // try {
+      //   const response = await axios.post('https://helen-house-backend-v3uq.onrender.com/signup', userCreate)
+      //   console.log('User Created',response.data.user)
+
+      //   // If the user was successfully created, store the userId in local storage
+      //   if (response.data.user && response.data.user.id) {
+      //     localStorage.setItem('userId', response.data.user.id);
+      //   }
+      // } catch (error) {
+      //   console.log(error.message);
+
+      //   // If there was an error, check if the user already exists in the database
+      //   try {
+      //     const checkUserResponse = await axios.get(`https://helen-house-backend-v3uq.onrender.com/checkUser?id=6`);
+      //     console.log('User Exists', checkUserResponse.data);
+      //     // const checkUserResponse = await axios.get(`https://helen-house-backend-v3uq.onrender.com/checkUser?username=${user?.sub}`);
+      //     if (checkUserResponse.data && checkUserResponse.data.userId) {
+      //       localStorage.setItem('userId', checkUserResponse.data.userId);
+      //     } else {
+      //       // If the user doesn't exist in the database, handle the error accordingly
+      //       console.log("User not found in the database.");
+      //     }
+      //   } catch (error) {
+      //     console.log("Error checking user in the database.");
+      //   }
+      // }
+    };
+
+    handleSignUp()
+  }, [user]);
 
   return (
     <Button
@@ -19,54 +75,21 @@ const Auth0LoginButton = () => {
 
 export default Auth0LoginButton;
 
-// import React from "react";
-// import axios from "axios";
-// import { useAuth0 } from "@auth0/auth0-react";
-// import { Button } from "@mui/material";
 
-// const Auth0LoginButton = () => {
-//   const { loginWithRedirect, user } = useAuth0();
+// const handleSignUp = async () => {
+//   console.log(user)
+//   console.log(userCreate)
 
-//   // Function to check if the user exists in your API
-//   const checkUserExists = async () => {
-//     try {
-//       // Make a GET request to your API to check if the user exists
-//       const response = await axios.get(`http://localhost:3001/api/users/${user.name}`);
-
-//       // If the user exists in your API, perform the login
-//       loginWithRedirect();
-//     } catch (error) {
-//       // If the user doesn't exist, create a new user with their username as their name
-//       createUser();
+//   try {
+//     const response = await axios.post('https://helen-house-backend-v3uq.onrender.com/signup', userCreate)
+//     console.log(response.data.user)
+    
+//     // If the user was successfully created, store the userId in local storage
+//     if (response.data.user && response.data.user.id) {
+//       localStorage.setItem('userId', response.data.user.id);
 //     }
-//   };
-
-//   // Function to create a new user in your API
-//   const createUser = async () => {
-//     try {
-//       // Make a POST request to your API to create a new user
-//       await axios.post("http://localhost:3001/api/users", {
-//         username: user.name,
-//         // Include any other user data you want to save in your database
-//       });
-
-//       // Perform the login after creating the user
-//       loginWithRedirect();
-//     } catch (error) {
-//       console.error("Error creating user:", error);
-//     }
-//   };
-
-//   return (
-//     <Button
-//       type="submit"
-//       variant="inherit"
-//       color="inherit"
-//       onClick={() => checkUserExists()}
-//     >
-//       Log In
-//     </Button>
-//   );
-// };
-
-// export default Auth0LoginButton;
+//   } catch (error) {
+//     // TODO: Make a call to https://helen-house-backend-v3uq.onrender.com/checkUser
+//     console.log(error);
+//   }
+// }
