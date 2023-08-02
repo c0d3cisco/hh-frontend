@@ -41,11 +41,6 @@ The Helen House Application aims to solve the need for a secure and efficient da
 - [Auth0](https://auth0.com/) (Third-party authentication and authorization service) for handling user authentication securely.
 - [Backend Repo](https://github.com/MissionDrivenDevs/helen-house-backend)
 
-### Important Information
-
-Email Used: helenhouse867@gmail.com
-Password: Helenhouse@2023
-
 #### Front End
 
 Front-End Hosted through Render.com
@@ -143,3 +138,4 @@ To run the tests for the application, follow these steps:
 6. **Authentication and Authorization Flow**:
    - When a user attempts to access certain parts of the application or perform specific actions, the frontend sends authentication data to the backend.
    - The backend verifies the user's identity and checks their authorization level based on their roles and permissions to allow or deny access to certain features.
+# hh-frontend
